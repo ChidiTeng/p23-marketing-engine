@@ -6,6 +6,7 @@ import "./sales-workspace.css";
 import "./outreach-activities.css";
 import QueryProvider from "@/components/providers/query-provider";
 import AuthInitializer from "@/components/providers/auth-initializer";
+import { MockProvider } from "@/mocks/mock-provider";
 import { Toaster } from "sonner";
 
 const poppins = Poppins({
@@ -55,11 +56,13 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <QueryProvider>
-          <AuthInitializer>
-            {children}
-          </AuthInitializer>
-        </QueryProvider>
+        <MockProvider>
+          <QueryProvider>
+            <AuthInitializer>
+              {children}
+            </AuthInitializer>
+          </QueryProvider>
+        </MockProvider>
         <Toaster position="top-center" richColors />
       </body>
     </html>

@@ -2,7 +2,7 @@
 
 ## Summary of Accomplishments
 
-Milestones **M0**, **M1**, **M2**, **M3**, and **M4** have been fully executed, tested, and verified in the repository `p23-marketing-engine`.
+Milestones **M0**, **M1**, **M2**, **M3**, **M4**, and **M5** have been fully executed, tested, and verified in the repository `p23-marketing-engine`.
 
 ```mermaid
 flowchart TD
@@ -11,7 +11,8 @@ flowchart TD
     C -->|M2: Retained Screens| D[Dashboard / Smart Leads / Social Listening / CRM]
     D -->|M3: RBAC & User Management| E[Admin Guard + /users Screen + Modals]
     E -->|M4: Attribution & Deduplication| F[Channel Select + /duplicates Screen + Triage Actions]
-    F -->|Verification| G[53 Test Suites / 239 Tests Passed / 28 Routes Built]
+    F -->|M5: Website Intake & Sectors| G[/demo/enquiry Public Intake + Lead Detail Sector Chips]
+    G -->|Verification| H[54 Test Suites / 242 Tests Passed / 29 Routes Built]
 ```
 
 ---
@@ -101,25 +102,54 @@ flowchart TD
 
 ---
 
+### Milestone M5: Website Enquiry Intake & Sector Tagging (`11fb734`)
+- **Public Demo Enquiry Page (`app/demo/enquiry/page.tsx`)**:
+  - Public intake page simulating organic website contact inquiries.
+  - Features 4 one-click demo presets:
+    1. *Civil Construction & Infrastructure* (tags Construction sector)
+    2. *FinTech Cloud Platform* (tags Technology sector)
+    3. *Agribusiness & Harvesting* (tags Agriculture sector)
+    4. *Duplicate Phone Collision* (triggers Admin Review Queue collision)
+  - Live submission confirmation display showing:
+    - Classified Primary Sector badge
+    - Assigned sales representative name via Round-Robin
+    - Heuristic lead score (0–100)
+    - Direct "Open CRM Leads" action
+- **Backend Mock Integration (`mocks/handlers/enquiries.ts`)**:
+  - Pure rule execution on `POST /public/enquiries` and `POST /enquiries`:
+    - Deduplication checking (`checkDuplicate`)
+    - Sector taxonomy matching (`matchInterests`)
+    - Score calculation (`calculateHeuristicScore`)
+    - Round-robin assignment (`pickNextRep`)
+    - Duplicate review queuing for phone matches
+- **Lead Detail Sector Display & Editing (`app/(dashboard)/crm/leads/[id]/page.tsx`)**:
+  - Added Primary Sector badge chip displaying classified sector (with custom sector colors).
+  - Added Acquisition Channel and Intake Method display (`channel · capture_method`).
+  - Added Heuristic Quality Score indicator (0–100).
+  - In edit mode, provides an intuitive sector dropdown for updating the lead's sector, persisting changes via `updateLead`.
+- **Unit Tests (`app/demo/enquiry/enquiry.test.tsx`)**: 3 tests verifying Construction inquiry interest tagging, Technology inquiry interest tagging, and duplicate phone collision routing.
+
+---
+
 ## Verification Results
 
 | Check | Target | Result | Status |
 | :--- | :--- | :--- | :--- |
 | **TypeScript Compilation** | `npx tsc --noEmit` | 0 errors across entire workspace | Passed |
-| **Vitest Test Suite** | `npm test` | **53 passed suites, 239 passed tests, 0 failed** | Passed |
+| **Vitest Test Suite** | `npm test` | **54 passed suites, 242 passed tests, 0 failed** | Passed |
+| **Enquiry Intake Tests** | `vitest run app/demo/enquiry/enquiry.test.tsx` | **3 passed tests** | Passed |
 | **Duplicate Queue Tests** | `vitest run hooks/use-duplicates.test.tsx` | **4 passed tests** | Passed |
 | **User Management Tests** | `vitest run hooks/use-organization-members.test.tsx` | **6 passed tests** | Passed |
 | **Engine Rule Unit Tests** | `vitest run mocks/engine/` | **13 passed tests** | Passed |
 | **Seed Contract Tests** | `vitest run mocks/db/` | **7 passed tests** | Passed |
-| **Production Build** | `next build` (Turbopack) | **28 routes generated cleanly in 21.3s** | Passed |
+| **Production Build** | `next build` (Turbopack) | **29 routes generated cleanly in 22.1s** | Passed |
 
 ---
 
-## Next Steps: Milestone M5 & M6
-- **Milestone M5: Website Enquiry Intake (`/demo/enquiry`) & Sector Tagging**:
-  - Build `app/demo/enquiry/page.tsx` styled as a public P23 contact form.
-  - Wire to `POST /public/enquiries`.
-  - Simulate submission, verify interest tagging, automatic round-robin assignment, and notification toast.
-  - Display editable sector/interest chips on lead detail screen (`app/(dashboard)/crm/leads/[id]/page.tsx`).
+## Next Steps: Milestone M6 & M7
 - **Milestone M6: Analytics Review Screen (`/analytics`)**:
   - Build Recharts dashboard with Channel Breakdown bar chart, Capture Method chart, and Primary Interest donut chart (percentages summing to 100%).
+  - Ensure chart slices link directly to `/crm?channel=` or `/crm?interest=`.
+- **Milestone M7: Demo Controls Panel & End-to-End Rehearsal**:
+  - Build `mocks/demo/demo-panel.tsx` (persona switcher: Owner Alex, Admin Sarah, Rep David; seed reset; simulation triggers).
+  - Execute full 7-step rehearsal verification.

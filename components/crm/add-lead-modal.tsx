@@ -26,6 +26,7 @@ type FormErrors = Partial<{
   position: string;
   profileUrls: string;
   source: string;
+  channel: string;
   status: string;
   priority: string;
   assignedToUserId: string;
@@ -221,6 +222,7 @@ export function AddLeadModal({
     lead?.profile_urls?.length ? lead.profile_urls : [""]
   );
   const [source, setSource] = useState(lead?.source ?? "");
+  const [channel, setChannel] = useState<string>((lead as any)?.channel ?? "website");
   const { data: pipelines = [] } = useCrmPipelines(companyId ?? undefined, apiBasePath);
   const { data: labels = [] } = useCrmLabels(companyId ?? undefined, apiBasePath);
   const { data: preferences } = useCrmPreferences(companyId ?? undefined, apiBasePath);
@@ -287,8 +289,19 @@ export function AddLeadModal({
 
   const createMutation = useCreateLead(
     {
-      onSuccess: () => {
-        toast.success("Lead created successfully.");
+      onSuccess: (leadItem) => {
+        const itemAny = leadItem as any;
+        if (itemAny?.matched) {
+          toast.info(itemAny?.message || "Duplicate lead matched. Information merged.");
+        } else if (itemAny?.queued_for_review) {
+          toast.warning("Duplicate phone collision detected. Lead routed to Admin Review Queue.");
+        } else if (itemAny?.assignee?.name) {
+          toast.success(
+            `Lead created and assigned to ${itemAny.assignee.name} via Round-Robin.`
+          );
+        } else {
+          toast.success("Lead created successfully.");
+        }
         onClose();
       },
     },
@@ -434,7 +447,9 @@ export function AddLeadModal({
       website: website.trim() ? normalizeWebsite(website) : null,
       position: position.trim() || null,
       profile_urls: cleanedProfileUrls.length > 0 ? cleanedProfileUrls : null,
-      source: source.trim() || (isAgentContext ? "agent_upload" : null),
+      source: channel || source.trim() || (isAgentContext ? "agent_upload" : null),
+      channel,
+      capture_method: "manual",
       status: effectiveStatus,
       priority,
       assigned_to_user_id: isAgentContext ? null : (assignedToUserId ? Number(assignedToUserId) : null),
@@ -600,15 +615,31 @@ export function AddLeadModal({
             </div>
 
             <div>
-              <FormRow label="Source" labelClassName="w-28">
-                <InlineInput
-                  value={source}
-                  onChange={(e) => { setSource(e.target.value); clearError("source"); }}
-                  placeholder="E.g Website, Referral"
+              <FormRow label="Channel" labelClassName="w-28">
+                <InlineSelect
+                  value={channel}
+                  onChange={(val) => {
+                    setChannel(val);
+                    setSource(val);
+                    clearError("channel");
+                    clearError("source");
+                  }}
+                  options={[
+                    { value: "website", label: "Website Form" },
+                    { value: "google", label: "Google" },
+                    { value: "linkedin", label: "LinkedIn" },
+                    { value: "instagram", label: "Instagram" },
+                    { value: "facebook", label: "Facebook" },
+                    { value: "x", label: "X (Twitter)" },
+                    { value: "youtube", label: "YouTube" },
+                    { value: "tiktok", label: "TikTok" },
+                    { value: "referral", label: "Referral" },
+                    { value: "other", label: "Other" },
+                  ]}
                   className="col-span-2"
                 />
               </FormRow>
-              <FieldError message={errors.source} />
+              <FieldError message={errors.channel || errors.source} />
             </div>
 
             <div>

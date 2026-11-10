@@ -4,6 +4,7 @@ import { invitationSchema, type Invitation } from "@/lib/api/contracts/invitatio
 import { interestSchema, type Interest } from "@/lib/api/contracts/interest";
 import { socialSignalSchema, type SocialSignal } from "@/lib/api/contracts/social-signal";
 import { icpProfileSchema, type IcpProfile } from "@/lib/api/contracts/icp-profile";
+import { duplicateReviewSchema, type DuplicateReview } from "@/lib/api/contracts/duplicate";
 import { DEFAULT_INTERESTS } from "../engine/tag-interests";
 
 export type SeedDatabase = {
@@ -27,7 +28,7 @@ export type SeedDatabase = {
   socialSignals: SocialSignal[];
   icpProfiles: IcpProfile[];
   sourceEvents: Array<{ id: number; lead_id: number; channel: string; capture_method: string; created_at: string }>;
-  duplicateReviews: Array<{ id: number; candidate_lead: Partial<CrmLead>; existing_lead_id: number; created_at: string }>;
+  duplicateReviews: DuplicateReview[];
 };
 
 const CHANNELS = [
@@ -203,6 +204,57 @@ export function buildSeedDatabase(): SeedDatabase {
     }),
   ];
 
+  // Duplicate Review Queue Seed Items
+  const duplicateReviews: DuplicateReview[] = [];
+  if (leads.length >= 6) {
+    const lead1 = leads[2];
+    const lead2 = leads[5];
+
+    duplicateReviews.push(
+      duplicateReviewSchema.parse({
+        id: 1,
+        existing_lead_id: lead1.id,
+        candidate_lead: {
+          name: `${lead1.name} (Regional)`,
+          email: `regional-desk@${lead1.company_name?.toLowerCase().replace(/[^a-z]/g, "") || "lagosgroup"}.ng`,
+          phone: lead1.phone,
+          company_name: `${lead1.company_name} West Africa`,
+          position: "Managing Director",
+          channel: "website",
+          capture_method: "website_form",
+          summary: "Submitted via contact form with the same primary office telephone number.",
+          profile_urls: [],
+        },
+        match_reason: `Colliding contact telephone number (${lead1.phone})`,
+        match_field: "phone",
+        status: "pending",
+        created_at: new Date(now.getTime() - 2 * 3600 * 1000).toISOString(),
+      })
+    );
+
+    duplicateReviews.push(
+      duplicateReviewSchema.parse({
+        id: 2,
+        existing_lead_id: lead2.id,
+        candidate_lead: {
+          name: lead2.name,
+          email: "operations@pan-african-ventures.com",
+          phone: lead2.phone,
+          company_name: "Pan-African Ventures Holding",
+          position: "Chief Operating Officer",
+          channel: "linkedin",
+          capture_method: "manual",
+          summary: "Captured from partner referral with direct mobile matching an existing pipeline deal.",
+          profile_urls: [`https://linkedin.com/in/${lead2.name.toLowerCase().replace(/\s+/g, "")}`],
+        },
+        match_reason: `Identical phone number (${lead2.phone}) with different corporate entity`,
+        match_field: "phone",
+        status: "pending",
+        created_at: new Date(now.getTime() - 6 * 3600 * 1000).toISOString(),
+      })
+    );
+  }
+
   return {
     version: "p23-demo-db:v1",
     currentUserRole: "owner",
@@ -220,6 +272,6 @@ export function buildSeedDatabase(): SeedDatabase {
     socialSignals,
     icpProfiles,
     sourceEvents: [],
-    duplicateReviews: [],
+    duplicateReviews,
   };
 }

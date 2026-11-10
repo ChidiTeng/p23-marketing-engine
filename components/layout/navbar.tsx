@@ -8,7 +8,7 @@ import { useAuthStore } from "@/store/auth";
 import { clearAuthSession, getAuthTokenFromDocument } from "@/lib/auth/session";
 import { logoutFromSalesEngine } from "@/lib/api/sales-engine-native-auth";
 import { getSalesEngineToken, clearSalesEngineSession } from "@/lib/sales-engine/session";
-import { ChevronDown, Menu, X, LogOut, Settings, BarChart3, Users } from "lucide-react";
+import { ChevronDown, Menu, X, LogOut, Settings, BarChart3, Users, GitMerge } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils/sample";
 import LogoutModal from "@/components/ui/logout-modal";
@@ -219,6 +219,14 @@ export function Navbar() {
                         <Users size={15} />
                         User Management
                       </Link>
+                      <Link
+                        href="/duplicates"
+                        onClick={() => setProfileOpen(false)}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium"
+                      >
+                        <GitMerge size={15} />
+                        Duplicate Queue
+                      </Link>
                       <div className="my-1 border-t border-white/10" />
                     </>
                   )}
@@ -356,6 +364,22 @@ export function Navbar() {
                         className={pathname.startsWith("/users") ? "text-[#2ae9c9]" : "opacity-40"}
                       />
                       <span className="text-lg font-bold">User Management</span>
+                    </Link>
+                    <Link
+                      href="/duplicates"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center gap-4 p-4 rounded-2xl transition-all",
+                        pathname.startsWith("/duplicates")
+                          ? "bg-white/5 text-white"
+                          : "text-white/40 hover:bg-white/5",
+                      )}
+                    >
+                      <GitMerge
+                        size={22}
+                        className={pathname.startsWith("/duplicates") ? "text-[#2ae9c9]" : "opacity-40"}
+                      />
+                      <span className="text-lg font-bold">Duplicate Queue</span>
                     </Link>
                   </div>
                 )}

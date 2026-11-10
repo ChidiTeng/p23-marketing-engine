@@ -36,12 +36,17 @@ export function DuplicateReviewView() {
       {/* Heading */}
       <div className="dr-heading">
         <div>
+          <div className="dr-heading-badge">
+            <AlertTriangle size={12} />
+            <span>P23 Deduplication & Hygiene Engine</span>
+          </div>
           <h1>Duplicate Review Queue</h1>
           <p>Triage contact collisions and phone matches to keep your CRM database consolidated.</p>
         </div>
 
         {reviews.length > 0 && (
           <div className="dr-count-badge">
+            <span className="dot" />
             <AlertTriangle size={15} />
             {reviews.length} {reviews.length === 1 ? "Collision Pending" : "Collisions Pending"}
           </div>

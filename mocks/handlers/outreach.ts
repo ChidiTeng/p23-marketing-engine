@@ -1,7 +1,16 @@
 import { http, HttpResponse } from "msw";
 import { withLatency } from "../utils/latency";
+import outreachDashboardSeed from "@/data/outreach-dashboard.json";
 
 export const outreachHandlers = [
+  http.get("*/outreach/dashboard*", async () => {
+    await withLatency(150);
+    return HttpResponse.json({
+      success: true,
+      data: outreachDashboardSeed,
+    });
+  }),
+
   http.post("*/outreach/send*", async () => {
     await withLatency(300);
     return HttpResponse.json({ success: true, message: "Outreach message queued." });

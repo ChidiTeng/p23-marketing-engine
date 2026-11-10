@@ -991,9 +991,11 @@ export default function LeadDetailsPage() {
                     </select>
                   ) : (
                     <div
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-[11px] font-semibold w-fit"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold w-fit shadow-xs"
                       style={{
-                        backgroundColor: SECTOR_OPTIONS.find(s => s.name === leadData.primary_interest?.name)?.color || "#3B82F6"
+                        backgroundColor: `${SECTOR_OPTIONS.find(s => s.name === leadData.primary_interest?.name)?.color || "#0284c7"}20`,
+                        color: SECTOR_OPTIONS.find(s => s.name === leadData.primary_interest?.name)?.color || "#0284c7",
+                        border: `1px solid ${SECTOR_OPTIONS.find(s => s.name === leadData.primary_interest?.name)?.color || "#0284c7"}40`,
                       }}
                     >
                       <Tag size={11} />
@@ -1006,10 +1008,10 @@ export default function LeadDetailsPage() {
                     Heuristic Score
                   </label>
                   <div className="flex items-center gap-2">
-                    <span className="text-[#0B1215] text-[16px] font-extrabold text-amber-600">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-700 font-bold text-[12px]">
                       {leadData.score ?? 85} / 100
                     </span>
-                    <span className="text-[11px] text-gray-400 font-normal">Quality rating</span>
+                    <span className="text-[11px] text-gray-500 font-medium">Auto-scored</span>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">

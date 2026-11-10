@@ -109,6 +109,10 @@ export function UserManagementView() {
       {/* Heading */}
       <div className="um-heading">
         <div>
+          <div className="um-heading-badge">
+            <Shield size={12} />
+            <span>P23 Team & Access Control</span>
+          </div>
           <h1>User Management</h1>
           <p>Manage team members, roles, round-robin lead allocation, and invitations.</p>
         </div>
@@ -286,6 +290,7 @@ export function UserManagementView() {
                           <td>
                             <div className="flex flex-col gap-0.5">
                               <span className={`um-status-badge is-${member.status}`}>
+                                <span className="um-status-dot" />
                                 {isSuspended ? "Suspended" : "Active"}
                               </span>
                               {isSuspended && member.suspended_reason && (
@@ -298,18 +303,18 @@ export function UserManagementView() {
                           <td>
                             {member.role === "member" ? (
                               isSuspended ? (
-                                <span className="inline-flex items-center gap-1.5 text-xs text-rose-400 font-medium">
+                                <span className="um-rr-badge um-rr-skipped">
                                   <Ban size={12} />
                                   Skipped
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
+                                <span className="um-rr-badge um-rr-active">
                                   <CheckCircle size={12} />
-                                  Eligible
+                                  Active in Pool
                                 </span>
                               )
                             ) : (
-                              <span className="text-xs text-white/30">—</span>
+                              <span className="um-rr-excluded">Excluded</span>
                             )}
                           </td>
                           <td className="text-xs text-white/50">
@@ -444,7 +449,10 @@ export function UserManagementView() {
                         <span className={`um-role-badge is-${inv.role}`}>{inv.role}</span>
                       </td>
                       <td>
-                        <span className="um-status-badge is-pending">Pending</span>
+                        <span className="um-status-badge is-pending">
+                          <span className="um-status-dot" />
+                          Pending
+                        </span>
                       </td>
                       <td className="text-xs text-white/50">
                         {new Date(inv.created_at).toLocaleDateString("en-GB", {

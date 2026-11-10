@@ -323,7 +323,7 @@ export function OutreachDashboardView({
 }) {
   const [view, setView] = useState<"businesses" | "outreach">("outreach");
   const [selectedOutreachId, setSelectedOutreachId] = useState<string | null>(null);
-  const [selectedBusinessId, setSelectedBusinessId] = useState(data.defaultBusinessId);
+  const [selectedBusinessId, setSelectedBusinessId] = useState(data?.defaultBusinessId ?? null);
   const [filterOpen, setFilterOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedPipeline, setSelectedPipeline] = useState<string>("all");
@@ -333,19 +333,22 @@ export function OutreachDashboardView({
   const [fullActivityOpen, setFullActivityOpen] = useState(false);
   const itemsPerPage = PAGE_SIZE;
 
-  const selectedOutreach = view === "outreach" ? data.outreach.find(item => item.id === selectedOutreachId) ?? data.outreach[0] : undefined;
+  const outreachList = data?.outreach ?? [];
+  const businessesList = data?.businesses ?? [];
+
+  const selectedOutreach = view === "outreach" ? outreachList.find(item => item.id === selectedOutreachId) ?? outreachList[0] : undefined;
   const selectedBusiness = view === "outreach"
-    ? data.businesses.find(item => item.id === selectedOutreach?.businessId)
-    : data.businesses.find(item => item.id === selectedBusinessId)
-      ?? data.businesses.find(item => item.id === data.defaultBusinessId)
-      ?? data.businesses[0];
+    ? businessesList.find(item => item.id === selectedOutreach?.businessId)
+    : businessesList.find(item => item.id === selectedBusinessId)
+      ?? businessesList.find(item => item.id === data?.defaultBusinessId)
+      ?? businessesList[0];
 
   const matches = (values: string[]) => values.some(value => value && value.toLowerCase().includes(query.trim().toLowerCase()));
 
   const getPipeline = (item: OutreachBusiness) => item.pipeline || "—";
   const getEmail = (item: OutreachBusiness) => item.email || "—";
 
-  const businesses = data.businesses.filter(item => {
+  const businesses = businessesList.filter(item => {
     if (selectedLeadFilterId && item.id !== selectedLeadFilterId) return false;
     if (selectedPipeline !== "all" && !item.pipelineIds?.includes(selectedPipeline)) return false;
     if (query.trim()) {
@@ -356,9 +359,9 @@ export function OutreachDashboardView({
     return true;
   });
 
-  const outreach = data.outreach.filter(item => {
+  const outreach = outreachList.filter(item => {
     if (selectedLeadFilterId && item.businessId !== selectedLeadFilterId) return false;
-    if (selectedPipeline !== "all" && !data.businesses.find(b => b.id === item.businessId)?.pipelineIds?.includes(selectedPipeline)) return false;
+    if (selectedPipeline !== "all" && !businessesList.find(b => b.id === item.businessId)?.pipelineIds?.includes(selectedPipeline)) return false;
     if (query.trim()) {
       return matches([item.name, item.channel, item.status, item.owner]);
     }
@@ -414,7 +417,7 @@ export function OutreachDashboardView({
       `}} />
       <h1>Outreach</h1>
       <div className="outreach-metrics">
-        {data.metrics.filter((card) => card.configured !== false).map(card => <article className="outreach-metric" key={card.id}>
+        {(data?.metrics ?? []).filter((card) => card.configured !== false).map(card => <article className="outreach-metric" key={card.id}>
           <h2>{card.title}</h2>
           <p className="metric-number">{number(card.total)}</p>
           <div className="outreach-progress">
@@ -427,8 +430,8 @@ export function OutreachDashboardView({
       <section className="prospects-panel" aria-label="Businesses and outreach activity">
         <div className="prospects-panel-surface" aria-hidden="true" />
         <div className="prospects-toolbar">
-          <button className={view === "outreach" ? "selected" : ""} onClick={() => { setView("outreach"); setPage(1); }} aria-pressed={view === "outreach"}>All Outreach <span>{data.counts.outreach}</span></button>
-          <button className={view === "businesses" ? "selected" : ""} onClick={() => { setView("businesses"); setPage(1); }} aria-pressed={view === "businesses"}>All Prospects <span>{data.counts.businesses}</span></button>
+          <button className={view === "outreach" ? "selected" : ""} onClick={() => { setView("outreach"); setPage(1); }} aria-pressed={view === "outreach"}>All Outreach <span>{data?.counts?.outreach ?? outreach.length}</span></button>
+          <button className={view === "businesses" ? "selected" : ""} onClick={() => { setView("businesses"); setPage(1); }} aria-pressed={view === "businesses"}>All Prospects <span>{data?.counts?.businesses ?? businesses.length}</span></button>
           <button onClick={() => setFilterOpen(value => !value)} aria-expanded={filterOpen} aria-controls="outreach-filter"><Image src={asset("6e7f3.svg")} alt="" width={18} height={18} />Filter</button>
         </div>
         <h2 className="prospects-title">{view === "businesses" ? "Number of Prospects" : "All Outreach"}</h2>
@@ -492,7 +495,7 @@ export function OutreachDashboardView({
                 {view === "businesses" && (
                   <>
                     <LeadSearchDropdown
-                      leads={data.businesses}
+                      leads={businessesList}
                       selectedLeadId={selectedLeadFilterId}
                       onSelectLead={id => {
                         setSelectedLeadFilterId(id);

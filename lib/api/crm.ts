@@ -102,6 +102,11 @@ export type LeadApiItem = {
     longitude?: number | null;
     logo_url?: string | null;
     map_url?: string | null;
+    primary_interest?: { id: number; name: string } | null;
+    interests?: Array<{ id: number; name: string }>;
+    channel?: string | null;
+    capture_method?: string | null;
+    score?: number | null;
     created_at?: string;
     updated_at?: string;
 };
@@ -197,6 +202,9 @@ export type UpdateLeadPayload = {
     last_interaction_at?: string | null;
     assigned_to_user_id?: number | null;
     converted_at?: string | null;
+    primary_interest?: { id: number; name: string } | null;
+    interests?: Array<{ id: number; name: string }>;
+    channel?: string | null;
     meta?: Record<string, unknown> | null;
 };
 

@@ -12,6 +12,7 @@ import {
   Save,
   FileText,
   Activity,
+  Tag,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -41,6 +42,15 @@ const PRIORITY_OPTIONS = [
   { label: "Medium", color: "#3B82F6" },
   { label: "High", color: "#F59E0B" },
   { label: "Urgent", color: "#EF4444" },
+];
+
+const SECTOR_OPTIONS = [
+  { id: 1, name: "Construction", color: "#F59E0B" },
+  { id: 2, name: "Business Consulting", color: "#3B82F6" },
+  { id: 3, name: "Technology", color: "#10B981" },
+  { id: 4, name: "Real Estate", color: "#8B5CF6" },
+  { id: 5, name: "Agriculture", color: "#14B8A6" },
+  { id: 6, name: "Other", color: "#6B7280" },
 ];
 
 /* --- Notes Panel --------------------------------------- */
@@ -364,6 +374,8 @@ type EditLeadForm = {
   priority: ApiLeadPriority;
   assigned_to_user_id: string;
   next_action: string;
+  primaryInterestId: number | null;
+  interests: Array<{ id: number; name: string }>;
 };
 
 /* --- Page Component -------------------------------------- */
@@ -417,6 +429,8 @@ export default function LeadDetailsPage() {
     priority: "medium",
     assigned_to_user_id: "",
     next_action: "",
+    primaryInterestId: null,
+    interests: [],
   });
   const [activeContactIndex, setActiveContactIndex] = useState(0);
   const [contactErrors, setContactErrors] = useState<LeadContactErrors[]>([]);
@@ -449,6 +463,8 @@ export default function LeadDetailsPage() {
     priority: lead.priority || "medium",
     assigned_to_user_id: lead.assigned_to_user_id ? String(lead.assigned_to_user_id) : "",
     next_action: toTrimmedString(lead.next_action),
+    primaryInterestId: lead.primary_interest?.id ?? null,
+    interests: Array.isArray(lead.interests) ? lead.interests : [],
   });
 
   const startEditing = () => {
@@ -550,6 +566,13 @@ export default function LeadDetailsPage() {
       source: editForm.source,
       priority: editForm.priority,
       next_action: editForm.next_action,
+      primary_interest: SECTOR_OPTIONS.find((s) => s.id === editForm.primaryInterestId)
+        ? {
+            id: SECTOR_OPTIONS.find((s) => s.id === editForm.primaryInterestId)!.id,
+            name: SECTOR_OPTIONS.find((s) => s.id === editForm.primaryInterestId)!.name,
+          }
+        : null,
+      interests: editForm.interests,
       assigned_to_user_id: editForm.assigned_to_user_id
         ? Number(editForm.assigned_to_user_id)
         : null,
@@ -942,6 +965,52 @@ export default function LeadDetailsPage() {
                       {leadDisplay.source}
                     </p>
                   )}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-gray-400 text-[12px] font-medium uppercase tracking-widest">
+                    Channel & Intake
+                  </label>
+                  <p className="text-[#0B1215] text-[15px] font-semibold truncate capitalize">
+                    {leadData.channel || leadData.source || "Website"} · <span className="text-xs text-gray-500 font-normal">{(leadData.capture_method || "manual").replace("_", " ")}</span>
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="text-gray-400 text-[12px] font-medium uppercase tracking-widest">
+                    Primary Sector
+                  </label>
+                  {isEditing ? (
+                    <select
+                      value={editForm.primaryInterestId ? String(editForm.primaryInterestId) : ""}
+                      onChange={(e) => updateField("primaryInterestId", e.target.value ? Number(e.target.value) : null)}
+                      className="bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-[14px] text-[#0B1215] outline-none"
+                    >
+                      <option value="">Select Sector</option>
+                      {SECTOR_OPTIONS.map((sec) => (
+                        <option key={sec.id} value={sec.id}>{sec.name}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-[11px] font-semibold w-fit"
+                      style={{
+                        backgroundColor: SECTOR_OPTIONS.find(s => s.name === leadData.primary_interest?.name)?.color || "#3B82F6"
+                      }}
+                    >
+                      <Tag size={11} />
+                      {leadData.primary_interest?.name || "General Business"}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-gray-400 text-[12px] font-medium uppercase tracking-widest">
+                    Heuristic Score
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#0B1215] text-[16px] font-extrabold text-amber-600">
+                      {leadData.score ?? 85} / 100
+                    </span>
+                    <span className="text-[11px] text-gray-400 font-normal">Quality rating</span>
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-gray-400 text-[12px] font-medium uppercase tracking-widest">

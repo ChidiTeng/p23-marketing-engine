@@ -2,15 +2,16 @@
 
 ## Summary of Accomplishments
 
-Milestones **M0**, **M1**, **M2**, and **M3** have been fully executed and verified in the target repository `p23-marketing-engine`.
+Milestones **M0**, **M1**, **M2**, **M3**, and **M4** have been fully executed, tested, and verified in the repository `p23-marketing-engine`.
 
 ```mermaid
 flowchart TD
     A[sales-engine upstream] -->|M0: Fork & Strip| B[p23-marketing-engine Client]
     B -->|M1: Mock Layer & Contracts| C[Zod Schemas + MSW + Seed DB]
     C -->|M2: Retained Screens| D[Dashboard / Smart Leads / Social Listening / CRM]
-    D -->|M3: RBAC & User Management| E[Admin Layout Guard + /users Screen + Modals]
-    E -->|Verification| F[52 Test Suites / 235 Tests Passed / 27 Routes Built]
+    D -->|M3: RBAC & User Management| E[Admin Guard + /users Screen + Modals]
+    E -->|M4: Attribution & Deduplication| F[Channel Select + /duplicates Screen + Triage Actions]
+    F -->|Verification| G[53 Test Suites / 239 Tests Passed / 28 Routes Built]
 ```
 
 ---
@@ -57,11 +58,11 @@ flowchart TD
 - **Role Guard & Current User Hook (`hooks/use-current-user.ts`)**: Fetches active role (`owner`, `admin`, `member`) and syncs session state.
 - **Admin Layout Guard (`app/(dashboard)/(admin)/layout.tsx`)**:
   - Protects `/(admin)/*` routes (`/users`, `/analytics`, `/duplicates`).
-  - Immediately redirects sales reps (`role === 'member'`) to `/crm` with a warning toast.
+  - Immediately redirects sales reps (`role === 'member'`) to `/crm` with an unauthorized warning toast.
   - Grants access to `owner` and `admin`.
 - **Navbar Profile Dropdown & Mobile Drawer (`components/layout/navbar.tsx`)**:
-  - Adds "Analytics Review" (`/analytics`) and "User Management" (`/users`) menu items above Settings in desktop profile menu and mobile drawer.
-  - Conditionally rendered only for `owner` and `admin`.
+  - Adds "Analytics Review" (`/analytics`), "User Management" (`/users`), and "Duplicate Queue" (`/duplicates`) to profile dropdown and mobile drawer.
+  - Gated to display only for `owner` and `admin`.
 - **User Management View & Modals (`components/user-management/` & `app/(dashboard)/(admin)/users/page.tsx`)**:
   - Summary stat cards: Total Team, Active Sales Reps, Suspended, Pending Invitations.
   - Tabs: "Team Members" (with live count) and "Pending Invitations".
@@ -74,25 +75,51 @@ flowchart TD
 
 ---
 
+### Milestone M4: Attribution, Deduplication Review Queue & Round-Robin Toast (`4d07041`)
+- **Add Lead Modal Channel Attribution (`components/crm/add-lead-modal.tsx`)**:
+  - Replaced free-text "Source" input with a required `Channel` dropdown featuring standard channels (`Website Form`, `Google`, `LinkedIn`, `Instagram`, `Facebook`, `X`, `YouTube`, `TikTok`, `Referral`, `Other`).
+  - Automatically tags `capture_method: "manual"`.
+  - Assignment toast: When a lead is created and assigned via round-robin, shows toast naming the assigned sales rep: `Lead created and assigned to {assignee_name} via Round-Robin.`
+  - Duplicate detection toast: When an exact match occurs on email/URL, displays notice confirming details were merged into the existing deal.
+  - When a collision occurs on phone number only, displays warning that the lead was routed to the Admin Review Queue.
+- **Duplicate Review Queue Screen (`app/(dashboard)/(admin)/duplicates/page.tsx`)**:
+  - Built `DuplicateReviewView` (`components/duplicates/duplicate-review-view.tsx`) with dark teal/cyan styling (`duplicate-review.css`).
+  - Displays side-by-side comparison between **Existing CRM Record** and **Incoming Submission**.
+  - Highlights colliding phone number in amber badge and new contact fields in mint badge.
+  - Action buttons:
+    - **Merge into Existing**: Merges new contact details into existing deal, appends notes, and marks resolved.
+    - **Keep Both as Separate**: Creates a separate lead, assigns via Round-Robin, and marks resolved.
+    - **Dismiss Alert**: Dismisses collision alert.
+  - Empty state with direct link to CRM leads.
+- **API Client & Hook (`lib/api/duplicates.ts`, `hooks/use-duplicates.ts`)**:
+  - Typed methods for `/admin/crm/duplicates` endpoints.
+  - TanStack Query hook with optimistic removal from review list on merge, keep-both, and dismiss.
+- **Mock Handlers Integration (`mocks/handlers/crm.ts`)**:
+  - Wired `POST /crm/leads` to run `checkDuplicate()`, `getNextRoundRobinRep()`, `matchInterests()`, and `calculateHeuristicScore()`.
+  - Added handlers for `/admin/crm/duplicates` GET, merge, keep-both, and delete.
+- **Tests (`hooks/use-duplicates.test.tsx`)**: 4 unit/integration tests verifying queue retrieval, merge, separate lead creation with round-robin assignment, and alert dismissal.
+
+---
+
 ## Verification Results
 
 | Check | Target | Result | Status |
 | :--- | :--- | :--- | :--- |
 | **TypeScript Compilation** | `npx tsc --noEmit` | 0 errors across entire workspace | Passed |
-| **Vitest Test Suite** | `npm test` | **52 passed suites, 235 passed tests, 0 failed** | Passed |
+| **Vitest Test Suite** | `npm test` | **53 passed suites, 239 passed tests, 0 failed** | Passed |
+| **Duplicate Queue Tests** | `vitest run hooks/use-duplicates.test.tsx` | **4 passed tests** | Passed |
 | **User Management Tests** | `vitest run hooks/use-organization-members.test.tsx` | **6 passed tests** | Passed |
 | **Engine Rule Unit Tests** | `vitest run mocks/engine/` | **13 passed tests** | Passed |
 | **Seed Contract Tests** | `vitest run mocks/db/` | **7 passed tests** | Passed |
-| **Production Build** | `next build` (Turbopack) | **27 routes generated cleanly in 19.2s** | Passed |
+| **Production Build** | `next build` (Turbopack) | **28 routes generated cleanly in 21.3s** | Passed |
 
 ---
 
-## Next Steps: Milestone M4
-- **Add Lead Modal Attribution Updates (`components/crm/add-lead-modal.tsx`)**:
-  - Replace free-text "Source" with required `Channel` dropdown matching `channelSchema` values (`google`, `instagram`, `linkedin`, `tiktok`, `youtube`, `facebook`, `x`, `website`, `referral`, `other`, `unknown`).
-  - Set `capture_method: "manual"`.
-- **Duplicate Review Screen (`app/(dashboard)/(admin)/duplicates/page.tsx`)**:
-  - Build `DuplicateReviewView` with "Merge into Existing" and "Keep Both as Separate" triage actions.
-- **Creation Toast & Assignment Display**:
-  - Display assignee name in CRM creation toast.
-  - Add Owner/Assignee column or badge on CRM lead list cards.
+## Next Steps: Milestone M5 & M6
+- **Milestone M5: Website Enquiry Intake (`/demo/enquiry`) & Sector Tagging**:
+  - Build `app/demo/enquiry/page.tsx` styled as a public P23 contact form.
+  - Wire to `POST /public/enquiries`.
+  - Simulate submission, verify interest tagging, automatic round-robin assignment, and notification toast.
+  - Display editable sector/interest chips on lead detail screen (`app/(dashboard)/crm/leads/[id]/page.tsx`).
+- **Milestone M6: Analytics Review Screen (`/analytics`)**:
+  - Build Recharts dashboard with Channel Breakdown bar chart, Capture Method chart, and Primary Interest donut chart (percentages summing to 100%).

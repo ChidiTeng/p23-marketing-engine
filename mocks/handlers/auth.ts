@@ -10,6 +10,7 @@ export const authHandlers = [
 
     // Set auth token cookie for Next.js server-side layout guard
     document.cookie = `auth_token=mock-p23-token-${user.id}; path=/; max-age=86400; SameSite=Lax`;
+    document.cookie = `factory_auth_token=mock-p23-token-${user.id}; path=/; max-age=86400; SameSite=Lax`;
 
     return HttpResponse.json({
       success: true,
@@ -32,6 +33,7 @@ export const authHandlers = [
   http.get("*/auth/me", async () => {
     await withLatency(50);
     const user = getCurrentUser();
+    const org = getDb().organization;
     return HttpResponse.json({
       success: true,
       data: {
@@ -40,9 +42,19 @@ export const authHandlers = [
         email: user.email,
         role: user.role,
         avatar_url: user.avatar_url,
-        current_organization: getDb().organization,
-        organizations: [getDb().organization],
+        current_organization: org,
+        organizations: [org],
       },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar_url: user.avatar_url,
+        organization_role: user.role,
+      },
+      current_organization: org,
+      organizations: [org],
     });
   }),
 

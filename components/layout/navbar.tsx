@@ -8,11 +8,12 @@ import { useAuthStore } from "@/store/auth";
 import { clearAuthSession, getAuthTokenFromDocument } from "@/lib/auth/session";
 import { logoutFromSalesEngine } from "@/lib/api/sales-engine-native-auth";
 import { getSalesEngineToken, clearSalesEngineSession } from "@/lib/sales-engine/session";
-import { ChevronDown, Menu, X, LogOut, Settings } from "lucide-react";
+import { ChevronDown, Menu, X, LogOut, Settings, BarChart3, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils/sample";
 import LogoutModal from "@/components/ui/logout-modal";
 import { resolveAvatarSrc } from "@/lib/avatar";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 
 const navItems = [
@@ -31,6 +32,7 @@ export function Navbar() {
   const profileRef = useRef<HTMLDivElement>(null);
   const user = useAuthStore((s) => s.user);
   const clearUser = useAuthStore((s) => s.clearUser);
+  const { isAdminOrOwner } = useCurrentUser();
   const basePath = "";
 
   useEffect(() => {
@@ -199,6 +201,27 @@ export function Navbar() {
 
                 {/* Menu items */}
                 <div className="p-1.5">
+                  {isAdminOrOwner && (
+                    <>
+                      <Link
+                        href="/analytics"
+                        onClick={() => setProfileOpen(false)}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium"
+                      >
+                        <BarChart3 size={15} />
+                        Analytics Review
+                      </Link>
+                      <Link
+                        href="/users"
+                        onClick={() => setProfileOpen(false)}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium"
+                      >
+                        <Users size={15} />
+                        User Management
+                      </Link>
+                      <div className="my-1 border-t border-white/10" />
+                    </>
+                  )}
                   <Link
                     href="/settings"
                     onClick={() => setProfileOpen(false)}
@@ -299,6 +322,43 @@ export function Navbar() {
                     </Link>
                   );
                 })}
+
+                {isAdminOrOwner && (
+                  <div className="pt-3 mt-3 border-t border-white/10 space-y-1">
+                    <Link
+                      href="/analytics"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center gap-4 p-4 rounded-2xl transition-all",
+                        pathname.startsWith("/analytics")
+                          ? "bg-white/5 text-white"
+                          : "text-white/40 hover:bg-white/5",
+                      )}
+                    >
+                      <BarChart3
+                        size={22}
+                        className={pathname.startsWith("/analytics") ? "text-[#2ae9c9]" : "opacity-40"}
+                      />
+                      <span className="text-lg font-bold">Analytics Review</span>
+                    </Link>
+                    <Link
+                      href="/users"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center gap-4 p-4 rounded-2xl transition-all",
+                        pathname.startsWith("/users")
+                          ? "bg-white/5 text-white"
+                          : "text-white/40 hover:bg-white/5",
+                      )}
+                    >
+                      <Users
+                        size={22}
+                        className={pathname.startsWith("/users") ? "text-[#2ae9c9]" : "opacity-40"}
+                      />
+                      <span className="text-lg font-bold">User Management</span>
+                    </Link>
+                  </div>
+                )}
               </div>
 
               <div className="mt-auto space-y-6">

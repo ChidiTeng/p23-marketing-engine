@@ -69,13 +69,20 @@ export function suspendMember(userId: number, payload: SuspendPayload): Member {
   const index = db.users.findIndex((u) => u.id === userId);
   if (index === -1) throw new Error("Member not found");
 
+  let suspendedUntil = payload.suspended_until ?? null;
+  if (payload.suspend_type === "duration" && payload.duration_days && !suspendedUntil) {
+    const d = new Date();
+    d.setDate(d.getDate() + payload.duration_days);
+    suspendedUntil = d.toISOString();
+  }
+
   const now = new Date().toISOString();
   db.users[index] = {
     ...db.users[index],
     status: "suspended",
     suspended_at: now,
     suspended_reason: payload.reason,
-    suspended_until: payload.suspended_until ?? null,
+    suspended_until: suspendedUntil,
   };
   saveDb(db);
   return db.users[index];

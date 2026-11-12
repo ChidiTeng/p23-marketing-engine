@@ -178,21 +178,61 @@ html[data-p23-theme="light"] .an-page {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: border-color 0.18s ease, transform 0.18s ease;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .an-kpi-card:hover {
   border-color: var(--an-border-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+
+.an-kpi-card-mint {
+  background: linear-gradient(135deg, #d8fcf4 0%, #b2f7e8 52%, #86efda 100%);
+  border: 1px solid rgba(13, 148, 136, 0.26);
+  box-shadow: 0 10px 26px -6px rgba(13, 148, 136, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
+}
+
+.an-kpi-card-mint:hover {
+  border-color: rgba(13, 148, 136, 0.5);
+}
+
+.an-kpi-card-rose {
+  background: linear-gradient(135deg, #fce7f6 0%, #f9ceee 52%, #f4b2e4 100%);
+  border: 1px solid rgba(192, 38, 211, 0.24);
+  box-shadow: 0 10px 26px -6px rgba(192, 38, 211, 0.14), inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
+}
+
+.an-kpi-card-rose:hover {
+  border-color: rgba(192, 38, 211, 0.48);
+}
+
+.an-kpi-card-violet {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e4d4ff 52%, #d4bfff 100%);
+  border: 1px solid rgba(124, 58, 237, 0.24);
+  box-shadow: 0 10px 26px -6px rgba(124, 58, 237, 0.14), inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
+}
+
+.an-kpi-card-violet:hover {
+  border-color: rgba(124, 58, 237, 0.48);
+}
+
+.an-kpi-card-amber {
+  background: linear-gradient(135deg, #fef5d7 0%, #fde69e 52%, #fcd56b 100%);
+  border: 1px solid rgba(217, 119, 6, 0.28);
+  box-shadow: 0 10px 26px -6px rgba(217, 119, 6, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
+}
+
+.an-kpi-card-amber:hover {
+  border-color: rgba(217, 119, 6, 0.5);
 }
 
 .an-kpi-card span {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--an-text-secondary);
+  color: #1e293b;
   font-size: 12.5px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .an-kpi-card strong {
@@ -355,46 +395,118 @@ html[data-p23-theme="light"] .an-page {
 
 /* Capture Method Inner Cards */
 .an-method-card {
-  padding: 16px;
-  border-radius: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
   background: var(--an-inner-bg);
   border: 1px solid var(--an-inner-border);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .an-method-card:hover {
   border-color: var(--an-border-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+
+/* Stream 1: Website Intake Form — Soft Mint/Teal Tint */
+.an-method-card-teal {
+  background: linear-gradient(145deg, #f0fdfa 0%, #ccfbf1 100%);
+  border-color: rgba(20, 184, 166, 0.28);
+  box-shadow: 0 8px 20px -8px rgba(13, 148, 136, 0.14);
+  --method-accent: #0f766e;
+  --method-badge-bg: rgba(20, 184, 166, 0.16);
+  --method-badge-border: rgba(13, 148, 136, 0.28);
+  --method-track: rgba(13, 148, 136, 0.14);
+  --method-fill: linear-gradient(90deg, #0d9488 0%, #14b8a6 55%, #2dd4bf 100%);
+  --method-divider: rgba(13, 148, 136, 0.16);
+}
+
+.an-method-card-teal:hover {
+  border-color: rgba(13, 148, 136, 0.5);
+}
+
+/* Stream 2: Manual Direct Capture — Soft Sky/Azure Tint */
+.an-method-card-sky {
+  background: linear-gradient(145deg, #f0f9ff 0%, #dbeafe 100%);
+  border-color: rgba(14, 165, 233, 0.28);
+  box-shadow: 0 8px 20px -8px rgba(2, 132, 199, 0.14);
+  --method-accent: #0369a1;
+  --method-badge-bg: rgba(14, 165, 233, 0.15);
+  --method-badge-border: rgba(2, 132, 199, 0.26);
+  --method-track: rgba(2, 132, 199, 0.14);
+  --method-fill: linear-gradient(90deg, #0284c7 0%, #0ea5e9 55%, #38bdf8 100%);
+  --method-divider: rgba(2, 132, 199, 0.16);
+}
+
+.an-method-card-sky:hover {
+  border-color: rgba(2, 132, 199, 0.5);
+}
+
+/* Stream 3: Smart Lead AI Match — Soft Electric Violet Tint */
+.an-method-card-violet {
+  background: linear-gradient(145deg, #faf5ff 0%, #ede9fe 100%);
+  border-color: rgba(139, 92, 246, 0.28);
+  box-shadow: 0 8px 20px -8px rgba(124, 58, 237, 0.14);
+  --method-accent: #6d28d9;
+  --method-badge-bg: rgba(139, 92, 246, 0.15);
+  --method-badge-border: rgba(124, 58, 237, 0.26);
+  --method-track: rgba(124, 58, 237, 0.14);
+  --method-fill: linear-gradient(90deg, #7c3aed 0%, #8b5cf6 55%, #a855f7 100%);
+  --method-divider: rgba(124, 58, 237, 0.16);
+}
+
+.an-method-card-violet:hover {
+  border-color: rgba(124, 58, 237, 0.5);
+}
+
+/* Stream 4: Social Listening Intent — Soft Rose/Amber Coral Tint */
+.an-method-card-rose {
+  background: linear-gradient(145deg, #fdf2f8 0%, #fce7f3 55%, #ffedd5 100%);
+  border-color: rgba(236, 72, 153, 0.28);
+  box-shadow: 0 8px 20px -8px rgba(219, 39, 119, 0.14);
+  --method-accent: #be185d;
+  --method-badge-bg: rgba(236, 72, 153, 0.14);
+  --method-badge-border: rgba(219, 39, 119, 0.26);
+  --method-track: rgba(219, 39, 119, 0.14);
+  --method-fill: linear-gradient(90deg, #db2777 0%, #ec4899 55%, #f97316 100%);
+  --method-divider: rgba(219, 39, 119, 0.16);
+}
+
+.an-method-card-rose:hover {
+  border-color: rgba(219, 39, 119, 0.5);
 }
 
 .an-method-title {
   font-size: 12.5px;
-  font-weight: 600;
-  color: var(--an-text-primary);
+  font-weight: 700;
+  color: #0f172a;
 }
 
 .an-method-pct {
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 700;
-  color: var(--an-accent-text);
+  color: var(--method-accent, var(--an-accent-text));
+  background: var(--method-badge-bg, var(--an-badge-bg));
+  border: 1px solid var(--method-badge-border, var(--an-badge-border));
+  padding: 2px 8px;
+  border-radius: 9999px;
 }
 
 .an-method-track {
   width: 100%;
   height: 7px;
   border-radius: 9999px;
-  background: var(--an-track-bg);
+  background: var(--method-track, var(--an-track-bg));
   overflow: hidden;
-  margin: 10px 0 12px;
+  margin: 12px 0 12px;
 }
 
 .an-method-fill {
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(90deg, #0d9488 0%, #2ae9c9 100%);
+  background: var(--method-fill, linear-gradient(90deg, #0d9488 0%, #2ae9c9 100%));
   transition: width 0.5s ease;
 }
 
@@ -403,14 +515,15 @@ html[data-p23-theme="light"] .an-page {
   align-items: center;
   justify-content: space-between;
   font-size: 11.5px;
-  color: var(--an-text-secondary);
+  font-weight: 500;
+  color: #334155;
   padding-top: 8px;
-  border-top: 1px solid var(--an-inner-border);
+  border-top: 1px solid var(--method-divider, var(--an-inner-border));
 }
 
 .an-method-link {
-  color: var(--an-accent-text);
-  font-weight: 600;
+  color: var(--method-accent, var(--an-accent-text));
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 4px;

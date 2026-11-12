@@ -1,60 +1,9 @@
 /* ==========================================================================
-   P23 Marketing Engine — Dual-Theme Executive Dashboard Design System
-   Dark Mode: Exact replica of the P23 Africa Executive Growth reference
-   Light Mode: Native P23 Marketing Engine teal-ink & crisp white surface system
+   P23 Marketing Engine — Light Mode Executive Dashboard Design System
+   Native P23 teal-ink, crisp surfaces, and complementary colorful KPI cards
    ========================================================================== */
 
 :root,
-[data-p23-theme="dark"] {
-  --p23-canvas-bg: radial-gradient(ellipse 68% 48% at 14% 0%, rgba(109, 40, 217, 0.34) 0%, rgba(76, 29, 149, 0.14) 45%, transparent 75%),
-    radial-gradient(ellipse 55% 42% at 88% 12%, rgba(88, 28, 135, 0.22) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 18% 95%, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
-    #07070c;
-  --p23-card-bg: rgba(18, 18, 26, 0.86);
-  --p23-card-bg-hover: rgba(24, 24, 35, 0.92);
-  --p23-card-border: rgba(255, 255, 255, 0.075);
-  --p23-card-border-hover: rgba(168, 85, 247, 0.28);
-  --p23-card-shadow: 0 14px 36px -6px rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
-
-  --p23-inner-bg: rgba(27, 27, 39, 0.72);
-  --p23-inner-bg-hover: rgba(36, 36, 52, 0.88);
-  --p23-inner-border: rgba(255, 255, 255, 0.055);
-
-  --p23-nav-dock-bg: rgba(18, 18, 27, 0.82);
-  --p23-nav-dock-border: rgba(255, 255, 255, 0.08);
-  --p23-nav-active-bg: #ffffff;
-  --p23-nav-active-text: #09090f;
-  --p23-nav-active-dot: #7c3aed;
-  --p23-nav-link-text: rgba(255, 255, 255, 0.68);
-  --p23-nav-link-hover: #ffffff;
-
-  --p23-text-primary: #ffffff;
-  --p23-text-secondary: #94a3b8;
-  --p23-text-muted: #64748b;
-  --p23-eyebrow: #a78bfa;
-
-  --p23-hero-card-bg: linear-gradient(135deg, #6ee7b7 0%, #86efac 32%, #bef264 72%, #d9f99d 100%);
-  --p23-hero-text: #052014;
-  --p23-hero-subtext: rgba(5, 32, 20, 0.68);
-  --p23-hero-badge-bg: #0b1812;
-  --p23-hero-badge-text: #a3e635;
-  --p23-hero-btn-primary-bg: #0b1410;
-  --p23-hero-btn-primary-text: #ffffff;
-  --p23-hero-btn-secondary-bg: rgba(255, 255, 255, 0.35);
-  --p23-hero-btn-secondary-text: #052014;
-
-  --p23-pill-control-bg: rgba(24, 24, 36, 0.85);
-  --p23-pill-control-border: rgba(255, 255, 255, 0.1);
-  --p23-btn-export-bg: #ffffff;
-  --p23-btn-export-text: #09090f;
-
-  --p23-bar-inactive: rgba(255, 255, 255, 0.12);
-  --p23-bar-inactive-top: rgba(255, 255, 255, 0.22);
-  --p23-bar-active: linear-gradient(180deg, #e9d5ff 0%, #c084fc 35%, #9333ea 100%);
-  --p23-bar-active-glow: 0 0 24px rgba(192, 132, 252, 0.45);
-  --p23-grid-line: rgba(255, 255, 255, 0.045);
-}
-
 [data-p23-theme="light"] {
   --p23-canvas-bg: linear-gradient(180deg, #eef5f7 0%, #f4f7f9 45%, #e9f1f4 100%);
   --p23-card-bg: #ffffff;
@@ -66,6 +15,8 @@
   --p23-inner-bg: #f8fafb;
   --p23-inner-bg-hover: #f0f6f8;
   --p23-inner-border: rgba(2, 34, 40, 0.08);
+  --p23-inner-row-bg: #f8fafb;
+  --p23-inner-row-border: rgba(2, 34, 40, 0.08);
 
   --p23-nav-dock-bg: #ffffff;
   --p23-nav-dock-border: rgba(2, 34, 40, 0.1);
@@ -78,8 +29,13 @@
   --p23-text-primary: #070b16;
   --p23-text-secondary: #475569;
   --p23-text-muted: #64748b;
+  --p23-text-eyebrow: #0d6e6e;
   --p23-eyebrow: #0d6e6e;
 
+  --p23-delta-up-bg: rgba(13, 148, 136, 0.14);
+  --p23-delta-up-text: #0f766e;
+
+  /* Card 1: Total Revenue Hero Card — KEPT AS IS */
   --p23-hero-card-bg: linear-gradient(135deg, #022228 0%, #09353f 55%, #165e69 100%);
   --p23-hero-text: #ffffff;
   --p23-hero-subtext: rgba(255, 255, 255, 0.75);
@@ -127,7 +83,59 @@
   border-color: var(--p23-card-border-hover);
 }
 
-/* Hero Revenue Card */
+/* ==========================================================================
+   Complementary Colorful KPI Cards (Cards 2–5 in Row 1)
+   ========================================================================== */
+
+/* Card 2: Qualified Leads — Complementary Soft Electric Violet / Lavender */
+.p23-kpi-card-leads {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e4d4ff 52%, #d4bfff 100%) !important;
+  border: 1px solid rgba(124, 58, 237, 0.24) !important;
+  box-shadow: 0 10px 26px -6px rgba(124, 58, 237, 0.14), inset 0 1px 0 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.p23-kpi-card-leads:hover {
+  border-color: rgba(124, 58, 237, 0.48) !important;
+  transform: translateY(-2px);
+}
+
+/* Card 3: Conversion Rate — Complementary Mint / Aqua Emerald */
+.p23-kpi-card-conversion {
+  background: linear-gradient(135deg, #d8fcf4 0%, #b2f7e8 52%, #86efda 100%) !important;
+  border: 1px solid rgba(13, 148, 136, 0.26) !important;
+  box-shadow: 0 10px 26px -6px rgba(13, 148, 136, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.p23-kpi-card-conversion:hover {
+  border-color: rgba(13, 148, 136, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* Card 4: Active Opps — Complementary Warm Golden Amber / Peach */
+.p23-kpi-card-opps {
+  background: linear-gradient(135deg, #fef5d7 0%, #fde69e 52%, #fcd56b 100%) !important;
+  border: 1px solid rgba(217, 119, 6, 0.28) !important;
+  box-shadow: 0 10px 26px -6px rgba(217, 119, 6, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.p23-kpi-card-opps:hover {
+  border-color: rgba(217, 119, 6, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* Card 5: Programmes — Complementary Rose Orchid / Coral Pink */
+.p23-kpi-card-programmes {
+  background: linear-gradient(135deg, #fce7f6 0%, #f9ceee 52%, #f4b2e4 100%) !important;
+  border: 1px solid rgba(192, 38, 211, 0.24) !important;
+  box-shadow: 0 10px 26px -6px rgba(192, 38, 211, 0.14), inset 0 1px 0 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.p23-kpi-card-programmes:hover {
+  border-color: rgba(192, 38, 211, 0.48) !important;
+  transform: translateY(-2px);
+}
+
+/* Hero Revenue Card (Card 1 — untouched) */
 .p23-hero-revenue-card {
   background: var(--p23-hero-card-bg);
   color: var(--p23-hero-text);
@@ -184,15 +192,14 @@
 }
 
 /* Light mode adaptations for legacy pages inside .dashboard-shell */
-[data-p23-theme="light"] .an-page,
-[data-p23-theme="light"] .um-page,
-[data-p23-theme="light"] .dr-page {
+.an-page,
+.um-page,
+.dr-page {
   color: #070b16;
 }
 
-[data-p23-theme="light"] .an-heading h1,
-[data-p23-theme="light"] .um-heading h1,
-[data-p23-theme="light"] .dr-heading h1 {
+.an-heading h1,
+.um-heading h1,
+.dr-heading h1 {
   color: #022228;
 }
-

@@ -1992,7 +1992,7 @@ function ChatWorkspace({
 
       <div
         ref={transcriptRef}
-        className={`mx-auto mt-5 min-h-0 w-full flex-1 overflow-y-auto scroll-smooth px-6 pb-4 text-[#09232d] max-sm:px-4 ${
+        className={`no-scrollbar mx-auto mt-5 min-h-0 w-full flex-1 overflow-y-auto scroll-smooth px-6 pb-4 text-[#09232d] max-sm:px-4 ${
           expanded ? "max-w-[1100px]" : "max-w-[824px]"
         }`}
       >
@@ -2649,7 +2649,7 @@ function OutreachPanel({ onOpenSettings }: { onOpenSettings: () => void }) {
         to view all outreach
       </p>
       {items.length > 0 ? (
-        <div className="mx-auto flex h-[440px] w-full max-w-[285px] flex-col gap-4 overflow-y-auto overflow-x-hidden pr-1 max-xl:h-[360px] [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.28)_transparent] [&::-webkit-scrollbar]:h-0 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-button]:hidden [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/25 hover:[&::-webkit-scrollbar-thumb]:bg-white/40">
+        <div className="no-scrollbar mx-auto flex h-[440px] w-full max-w-[285px] flex-col gap-4 overflow-y-auto overflow-x-hidden max-xl:h-[360px]">
           {items.map((item, index) => {
             const cardTheme = OUTREACH_CARD_PALETTE[index % OUTREACH_CARD_PALETTE.length];
             return (
@@ -3632,7 +3632,7 @@ function SocialOpportunityDetail({
         </p>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto pr-0.5">
+      <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto pr-0.5">
         <div className="grid grid-cols-2 border-b border-[#e9e9e9] px-5 py-3 text-[#616263]">
           <div className="flex items-center gap-2 border-r border-[#e9e9e9] pr-4">
             <Image
@@ -4037,7 +4037,7 @@ function ListeningSettingsModal({
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-5">
+            <div className="no-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-5">
               {isLoading ? (
                 <div className="flex items-center justify-center py-10 text-[13px] text-white/60">
                   <Loader2 size={18} className="mr-2 animate-spin" />

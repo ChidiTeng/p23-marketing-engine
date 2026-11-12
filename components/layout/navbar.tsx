@@ -73,7 +73,7 @@ export function Navbar() {
   const user = useAuthStore((s) => s.user);
   const clearUser = useAuthStore((s) => s.clearUser);
   const { isAdminOrOwner } = useCurrentUser();
-  const { theme, toggleTheme } = useP23Theme();
+  const { theme } = useP23Theme();
 
   const visibleNavItems = primaryNavItems.filter(
     (item) => !item.adminOnly || isAdminOrOwner
@@ -230,7 +230,7 @@ export function Navbar() {
           })}
         </div>
 
-        {/* Right Side Controls: Search (⌘K), Theme Switcher, Notifications, Profile Avatar */}
+        {/* Right Side Controls: Search (⌘K), Notifications, Profile Avatar */}
         <div className="flex items-center gap-2.5 sm:gap-3">
           {/* Search Trigger Pill */}
           <button
@@ -259,23 +259,6 @@ export function Navbar() {
             >
               ⌘K
             </kbd>
-          </button>
-
-          {/* Theme Switcher Button */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={isLight ? "Switch to dark theme" : "Switch to light theme"}
-            data-testid="theme-toggle-btn"
-            title={isLight ? "Switch to Dark Theme" : "Switch to Light Theme"}
-            className={cn(
-              "w-9 h-9 rounded-full border flex items-center justify-center transition-all cursor-pointer",
-              isLight
-                ? "bg-white border-[#022228]/12 text-[#022228] hover:bg-slate-100 shadow-2xs"
-                : "bg-[#12121c]/85 border-white/[0.08] text-slate-200 hover:text-white hover:border-purple-400/40"
-            )}
-          >
-            {isLight ? <Moon size={16} /> : <Sun size={16} className="text-amber-300" />}
           </button>
 
           {/* Notification Bell + Dropdown */}

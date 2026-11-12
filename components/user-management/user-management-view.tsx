@@ -128,30 +128,30 @@ export function UserManagementView() {
 
       {/* Summary Stat Cards */}
       <div className="um-summary-grid">
-        <div className="um-summary-card">
+        <div className="um-summary-card um-summary-card-violet">
           <span>
-            <Users size={16} className="text-[#2ae9c9]" />
+            <Users size={16} className="text-[#7c3aed]" />
             Total Team
           </span>
           <strong>{totalMembers}</strong>
         </div>
-        <div className="um-summary-card">
+        <div className="um-summary-card um-summary-card-mint">
           <span>
-            <UserCheck size={16} className="text-emerald-400" />
+            <UserCheck size={16} className="text-[#0d9488]" />
             Active Sales Reps
           </span>
           <strong>{activeReps}</strong>
         </div>
-        <div className="um-summary-card">
+        <div className="um-summary-card um-summary-card-rose">
           <span>
-            <UserX size={16} className="text-rose-400" />
+            <UserX size={16} className="text-[#db2777]" />
             Suspended
           </span>
           <strong>{suspendedMembers}</strong>
         </div>
-        <div className="um-summary-card">
+        <div className="um-summary-card um-summary-card-amber">
           <span>
-            <Mail size={16} className="text-amber-400" />
+            <Mail size={16} className="text-[#d97706]" />
             Pending Invitations
           </span>
           <strong>{pendingInvites}</strong>

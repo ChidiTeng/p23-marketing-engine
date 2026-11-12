@@ -134,7 +134,7 @@ describe("ExecutiveDashboardView & Dual-Theme Architecture", () => {
     );
   });
 
-  it("defaults to dark theme and toggles cleanly to light theme via Navbar", async () => {
+  it("locks permanently to light mode without a theme switcher and applies colorful KPI card styles", async () => {
     renderWithProviders(
       <>
         <Navbar />
@@ -143,15 +143,14 @@ describe("ExecutiveDashboardView & Dual-Theme Architecture", () => {
     );
 
     await waitFor(() => {
-      expect(document.documentElement.getAttribute("data-p23-theme")).toBe("dark");
-    });
-
-    const toggleBtn = screen.getByTestId("theme-toggle-btn");
-    fireEvent.click(toggleBtn);
-
-    await waitFor(() => {
       expect(document.documentElement.getAttribute("data-p23-theme")).toBe("light");
       expect(window.localStorage.getItem("p23-theme-mode")).toBe("light");
     });
+
+    expect(screen.queryByTestId("theme-toggle-btn")).toBeNull();
+    expect(screen.getByTestId("kpi-qualified-leads").className).toContain("p23-kpi-card-leads");
+    expect(screen.getByTestId("kpi-conversion-rate").className).toContain("p23-kpi-card-conversion");
+    expect(screen.getByTestId("kpi-active-opps").className).toContain("p23-kpi-card-opps");
+    expect(screen.getByTestId("kpi-programmes").className).toContain("p23-kpi-card-programmes");
   });
 });

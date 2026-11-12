@@ -282,16 +282,21 @@
   height: auto;
   overflow: visible;
   padding: calc(3 * var(--ds)) calc(14 * var(--ds)) calc(4 * var(--ds)) calc(10 * var(--ds));
-  scrollbar-width: thin;
-  scrollbar-color: #eee white;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.prospect-list::-webkit-scrollbar,
+.prospect-list-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .prospect-list-scroll {
   flex: none;
   min-height: 0;
   overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #eee white;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .prospect-list .prospect-pagination {

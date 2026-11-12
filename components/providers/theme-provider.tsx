@@ -1,8 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 
-export type P23ThemeMode = "dark" | "light";
+export type P23ThemeMode = "light";
 
 type ThemeContextValue = {
   theme: P23ThemeMode;
@@ -10,57 +10,32 @@ type ThemeContextValue = {
   toggleTheme: () => void;
 };
 
-const STORAGE_KEY = "p23-theme-mode";
-
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: "dark",
+  theme: "light",
   setTheme: () => undefined,
   toggleTheme: () => undefined,
 });
 
 export function P23ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<P23ThemeMode>("dark");
-
   useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(STORAGE_KEY) as P23ThemeMode | null;
-      const initial: P23ThemeMode = saved === "light" || saved === "dark" ? saved : "dark";
-      setThemeState(initial);
-      document.documentElement.setAttribute("data-p23-theme", initial);
-    } catch {
-      document.documentElement.setAttribute("data-p23-theme", "dark");
-    }
-  }, []);
-
-  const setTheme = useCallback((mode: P23ThemeMode) => {
-    setThemeState(mode);
-    try {
-      window.localStorage.setItem(STORAGE_KEY, mode);
-    } catch {
-      // Ignore storage errors in restricted environments
-    }
     if (typeof document !== "undefined") {
-      document.documentElement.setAttribute("data-p23-theme", mode);
+      document.documentElement.setAttribute("data-p23-theme", "light");
     }
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setThemeState((prev) => {
-      const next: P23ThemeMode = prev === "dark" ? "light" : "dark";
-      try {
-        window.localStorage.setItem(STORAGE_KEY, next);
-      } catch {
-        // Ignore storage errors
-      }
-      if (typeof document !== "undefined") {
-        document.documentElement.setAttribute("data-p23-theme", next);
-      }
-      return next;
-    });
+    try {
+      window.localStorage.setItem("p23-theme-mode", "light");
+    } catch {
+      // Ignore storage errors
+    }
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+    <ThemeContext.Provider
+      value={{
+        theme: "light",
+        setTheme: () => undefined,
+        toggleTheme: () => undefined,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
@@ -69,4 +44,3 @@ export function P23ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useP23Theme() {
   return useContext(ThemeContext);
 }
-

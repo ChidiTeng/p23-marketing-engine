@@ -491,7 +491,7 @@ export function ExecutiveDashboardView() {
         <div className="sm:col-span-2 xl:col-span-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 2: Qualified Leads */}
           <div
-            className="p23-bento-card p-4.5 flex flex-col justify-between min-h-[168px]"
+            className="p23-bento-card p23-kpi-card-leads p-4.5 flex flex-col justify-between min-h-[168px]"
             data-testid="kpi-qualified-leads"
           >
             <div className="flex items-center justify-between gap-2">
@@ -499,24 +499,24 @@ export function ExecutiveDashboardView() {
                 <span
                   className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                   style={{
-                    backgroundColor: "rgba(139, 92, 246, 0.16)",
-                    color: "#a78bfa",
+                    backgroundColor: "rgba(109, 40, 217, 0.16)",
+                    color: "#5b21b6",
                   }}
                 >
                   <Users className="w-3.5 h-3.5" />
                 </span>
                 <span
-                  className="text-[12.5px] font-medium truncate"
-                  style={{ color: "var(--p23-text-secondary)" }}
+                  className="text-[12.5px] font-semibold truncate"
+                  style={{ color: "#2e1065" }}
                 >
                   Qualified Leads
                 </span>
               </div>
               <span
-                className="px-2 py-0.5 rounded-full text-[11px] font-semibold shrink-0"
+                className="px-2 py-0.5 rounded-full text-[11px] font-bold shrink-0"
                 style={{
-                  background: "var(--p23-delta-up-bg)",
-                  color: "var(--p23-delta-up-text)",
+                  background: "rgba(109, 40, 217, 0.14)",
+                  color: "#4c1d95",
                 }}
               >
                 ↑ {data.kpis.qualifiedLeads.deltaPercent}%
@@ -524,16 +524,16 @@ export function ExecutiveDashboardView() {
             </div>
 
             <div
-              className="text-[28px] font-bold tracking-tight my-1"
-              style={{ color: "var(--p23-text-primary)" }}
+              className="text-[28px] font-extrabold tracking-tight my-1"
+              style={{ color: "#1e1b4b" }}
             >
               {data.kpis.qualifiedLeads.formatted}
             </div>
 
             <div className="flex items-end justify-between gap-2">
               <span
-                className="text-[11px]"
-                style={{ color: "var(--p23-text-muted)" }}
+                className="text-[11px] font-medium"
+                style={{ color: "#4c1d95" }}
               >
                 {data.kpis.qualifiedLeads.subtext}
               </span>
@@ -546,16 +546,16 @@ export function ExecutiveDashboardView() {
               >
                 <defs>
                   <linearGradient id="spark-purple" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.42" />
-                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.0" />
+                    <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.38" />
+                    <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
                 <path d={leadsSpark.areaPath} fill="url(#spark-purple)" />
                 <path
                   d={leadsSpark.linePath}
                   fill="none"
-                  stroke="#a78bfa"
-                  strokeWidth="2"
+                  stroke="#6d28d9"
+                  strokeWidth="2.2"
                   strokeLinecap="round"
                 />
               </svg>
@@ -564,7 +564,7 @@ export function ExecutiveDashboardView() {
 
           {/* Card 3: Conversion Rate */}
           <div
-            className="p23-bento-card p-4.5 flex flex-col justify-between min-h-[168px]"
+            className="p23-bento-card p23-kpi-card-conversion p-4.5 flex flex-col justify-between min-h-[168px]"
             data-testid="kpi-conversion-rate"
           >
             <div className="flex items-center justify-between gap-2">
@@ -572,24 +572,24 @@ export function ExecutiveDashboardView() {
                 <span
                   className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                   style={{
-                    backgroundColor: "rgba(45, 212, 191, 0.16)",
-                    color: "#2dd4bf",
+                    backgroundColor: "rgba(13, 148, 136, 0.18)",
+                    color: "#0f766e",
                   }}
                 >
                   <TrendingUp className="w-3.5 h-3.5" />
                 </span>
                 <span
-                  className="text-[12.5px] font-medium truncate"
-                  style={{ color: "var(--p23-text-secondary)" }}
+                  className="text-[12.5px] font-semibold truncate"
+                  style={{ color: "#042f2e" }}
                 >
                   Conversion Rate
                 </span>
               </div>
               <span
-                className="px-2 py-0.5 rounded-full text-[11px] font-semibold shrink-0"
+                className="px-2 py-0.5 rounded-full text-[11px] font-bold shrink-0"
                 style={{
-                  background: "var(--p23-delta-up-bg)",
-                  color: "var(--p23-delta-up-text)",
+                  background: "rgba(13, 148, 136, 0.16)",
+                  color: "#115e59",
                 }}
               >
                 ↑ {data.kpis.conversionRate.deltaPercent}%
@@ -597,16 +597,16 @@ export function ExecutiveDashboardView() {
             </div>
 
             <div
-              className="text-[28px] font-bold tracking-tight my-1"
-              style={{ color: "var(--p23-text-primary)" }}
+              className="text-[28px] font-extrabold tracking-tight my-1"
+              style={{ color: "#022228" }}
             >
               {data.kpis.conversionRate.formatted}
             </div>
 
             <div className="flex items-end justify-between gap-2">
               <span
-                className="text-[11px]"
-                style={{ color: "var(--p23-text-muted)" }}
+                className="text-[11px] font-medium"
+                style={{ color: "#115e59" }}
               >
                 {data.kpis.conversionRate.subtext}
               </span>
@@ -619,16 +619,16 @@ export function ExecutiveDashboardView() {
               >
                 <defs>
                   <linearGradient id="spark-teal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#2dd4bf" stopOpacity="0.42" />
-                    <stop offset="100%" stopColor="#2dd4bf" stopOpacity="0.0" />
+                    <stop offset="0%" stopColor="#0d9488" stopOpacity="0.38" />
+                    <stop offset="100%" stopColor="#0d9488" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
                 <path d={convSpark.areaPath} fill="url(#spark-teal)" />
                 <path
                   d={convSpark.linePath}
                   fill="none"
-                  stroke="#2dd4bf"
-                  strokeWidth="2"
+                  stroke="#0f766e"
+                  strokeWidth="2.2"
                   strokeLinecap="round"
                 />
               </svg>
@@ -637,7 +637,7 @@ export function ExecutiveDashboardView() {
 
           {/* Card 4: Active Opps */}
           <div
-            className="p23-bento-card p-4.5 flex flex-col justify-between min-h-[168px]"
+            className="p23-bento-card p23-kpi-card-opps p-4.5 flex flex-col justify-between min-h-[168px]"
             data-testid="kpi-active-opps"
           >
             <div className="flex items-center justify-between gap-2">
@@ -645,24 +645,24 @@ export function ExecutiveDashboardView() {
                 <span
                   className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                   style={{
-                    backgroundColor: "rgba(245, 158, 11, 0.16)",
-                    color: "#fbbf24",
+                    backgroundColor: "rgba(217, 119, 6, 0.18)",
+                    color: "#b45309",
                   }}
                 >
                   <Target className="w-3.5 h-3.5" />
                 </span>
                 <span
-                  className="text-[12.5px] font-medium truncate"
-                  style={{ color: "var(--p23-text-secondary)" }}
+                  className="text-[12.5px] font-semibold truncate"
+                  style={{ color: "#451a03" }}
                 >
                   Active Opps
                 </span>
               </div>
               <span
-                className="px-2 py-0.5 rounded-full text-[11px] font-semibold shrink-0"
+                className="px-2 py-0.5 rounded-full text-[11px] font-bold shrink-0"
                 style={{
-                  background: "var(--p23-delta-up-bg)",
-                  color: "var(--p23-delta-up-text)",
+                  background: "rgba(217, 119, 6, 0.16)",
+                  color: "#92400e",
                 }}
               >
                 ↑ {data.kpis.activeOpps.deltaPercent}%
@@ -670,16 +670,16 @@ export function ExecutiveDashboardView() {
             </div>
 
             <div
-              className="text-[28px] font-bold tracking-tight my-1"
-              style={{ color: "var(--p23-text-primary)" }}
+              className="text-[28px] font-extrabold tracking-tight my-1"
+              style={{ color: "#451a03" }}
             >
               {data.kpis.activeOpps.formatted}
             </div>
 
             <div className="flex items-end justify-between gap-2">
               <span
-                className="text-[11px]"
-                style={{ color: "var(--p23-text-muted)" }}
+                className="text-[11px] font-medium"
+                style={{ color: "#78350f" }}
               >
                 {data.kpis.activeOpps.subtext}
               </span>
@@ -692,16 +692,16 @@ export function ExecutiveDashboardView() {
               >
                 <defs>
                   <linearGradient id="spark-amber" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.42" />
-                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.0" />
+                    <stop offset="0%" stopColor="#d97706" stopOpacity="0.38" />
+                    <stop offset="100%" stopColor="#d97706" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
                 <path d={oppsSpark.areaPath} fill="url(#spark-amber)" />
                 <path
                   d={oppsSpark.linePath}
                   fill="none"
-                  stroke="#fbbf24"
-                  strokeWidth="2"
+                  stroke="#b45309"
+                  strokeWidth="2.2"
                   strokeLinecap="round"
                 />
               </svg>
@@ -710,7 +710,7 @@ export function ExecutiveDashboardView() {
 
           {/* Card 5: Programmes */}
           <div
-            className="p23-bento-card p-4.5 flex flex-col justify-between min-h-[168px]"
+            className="p23-bento-card p23-kpi-card-programmes p-4.5 flex flex-col justify-between min-h-[168px]"
             data-testid="kpi-programmes"
           >
             <div className="flex items-center justify-between gap-2">
@@ -718,24 +718,24 @@ export function ExecutiveDashboardView() {
                 <span
                   className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                   style={{
-                    backgroundColor: "rgba(192, 132, 252, 0.16)",
-                    color: "#c084fc",
+                    backgroundColor: "rgba(192, 38, 211, 0.16)",
+                    color: "#86198f",
                   }}
                 >
                   <GraduationCap className="w-3.5 h-3.5" />
                 </span>
                 <span
-                  className="text-[12.5px] font-medium truncate"
-                  style={{ color: "var(--p23-text-secondary)" }}
+                  className="text-[12.5px] font-semibold truncate"
+                  style={{ color: "#4a044e" }}
                 >
                   Programmes
                 </span>
               </div>
               <span
-                className="px-2 py-0.5 rounded-full text-[11px] font-semibold shrink-0"
+                className="px-2 py-0.5 rounded-full text-[11px] font-bold shrink-0"
                 style={{
-                  background: "var(--p23-delta-up-bg)",
-                  color: "var(--p23-delta-up-text)",
+                  background: "rgba(192, 38, 211, 0.14)",
+                  color: "#701a75",
                 }}
               >
                 ↑ {data.kpis.programmes.deltaPercent.toFixed(1)}%
@@ -743,16 +743,16 @@ export function ExecutiveDashboardView() {
             </div>
 
             <div
-              className="text-[28px] font-bold tracking-tight my-1"
-              style={{ color: "var(--p23-text-primary)" }}
+              className="text-[28px] font-extrabold tracking-tight my-1"
+              style={{ color: "#3b0764" }}
             >
               {data.kpis.programmes.formatted}
             </div>
 
             <div className="flex items-end justify-between gap-2">
               <span
-                className="text-[11px]"
-                style={{ color: "var(--p23-text-muted)" }}
+                className="text-[11px] font-medium"
+                style={{ color: "#701a75" }}
               >
                 {data.kpis.programmes.subtext}
               </span>
@@ -765,16 +765,16 @@ export function ExecutiveDashboardView() {
               >
                 <defs>
                   <linearGradient id="spark-violet" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#c084fc" stopOpacity="0.42" />
-                    <stop offset="100%" stopColor="#c084fc" stopOpacity="0.0" />
+                    <stop offset="0%" stopColor="#c026d3" stopOpacity="0.38" />
+                    <stop offset="100%" stopColor="#c026d3" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
                 <path d={progSpark.areaPath} fill="url(#spark-violet)" />
                 <path
                   d={progSpark.linePath}
                   fill="none"
-                  stroke="#c084fc"
-                  strokeWidth="2"
+                  stroke="#a21caf"
+                  strokeWidth="2.2"
                   strokeLinecap="round"
                 />
               </svg>

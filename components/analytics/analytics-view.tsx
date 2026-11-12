@@ -124,6 +124,28 @@ export function AnalyticsView() {
     }
   };
 
+  const getMethodThemeClass = (method: string, index: number) => {
+    switch (method) {
+      case "website_form":
+        return "an-method-card-teal";
+      case "manual":
+        return "an-method-card-sky";
+      case "smart_lead":
+        return "an-method-card-violet";
+      case "social_listening":
+        return "an-method-card-rose";
+      default: {
+        const themes = [
+          "an-method-card-teal",
+          "an-method-card-sky",
+          "an-method-card-violet",
+          "an-method-card-rose",
+        ];
+        return themes[index % themes.length];
+      }
+    }
+  };
+
   return (
     <div className="an-page" data-testid="analytics-view">
       {/* Page Header */}
@@ -186,38 +208,38 @@ export function AnalyticsView() {
 
       {/* KPI Stats Grid */}
       <div className="an-kpi-grid">
-        <div className="an-kpi-card" data-testid="kpi-total-leads">
+        <div className="an-kpi-card an-kpi-card-mint" data-testid="kpi-total-leads">
           <span>
-            <Users className="w-4 h-4 text-[#14b8a6]" /> Total Captured Leads
+            <Users className="w-4 h-4 text-[#0d9488]" /> Total Captured Leads
           </span>
           <strong>{overviewLoading ? "..." : totalLeads.toLocaleString()}</strong>
-          <small className="flex items-center gap-1 text-emerald-500">
+          <small className="flex items-center gap-1 text-[#065f46]">
             <ArrowUpRight className="w-3.5 h-3.5" /> +18% new this week
           </small>
         </div>
 
-        <div className="an-kpi-card" data-testid="kpi-pipeline-value">
+        <div className="an-kpi-card an-kpi-card-rose" data-testid="kpi-pipeline-value">
           <span>
-            <DollarSign className="w-4 h-4 text-[#0ea5e9]" /> Total Pipeline Value
+            <DollarSign className="w-4 h-4 text-[#c026d3]" /> Total Pipeline Value
           </span>
           <strong>{overviewLoading ? "..." : pipelineValue}</strong>
-          <small className="text-[#0ea5e9]">Heuristic weighted sum</small>
+          <small className="text-[#86198f]">Heuristic weighted sum</small>
         </div>
 
-        <div className="an-kpi-card" data-testid="kpi-conversion-rate">
+        <div className="an-kpi-card an-kpi-card-violet" data-testid="kpi-conversion-rate">
           <span>
-            <TrendingUp className="w-4 h-4 text-[#8b5cf6]" /> Win / Conversion Rate
+            <TrendingUp className="w-4 h-4 text-[#7c3aed]" /> Win / Conversion Rate
           </span>
           <strong>{overviewLoading ? "..." : `${convRate}%`}</strong>
-          <small className="text-[#8b5cf6]">Lead to Customer progression</small>
+          <small className="text-[#5b21b6]">Lead to Customer progression</small>
         </div>
 
-        <div className="an-kpi-card" data-testid="kpi-active-reps">
+        <div className="an-kpi-card an-kpi-card-amber" data-testid="kpi-active-reps">
           <span>
-            <UserCheck className="w-4 h-4 text-[#f59e0b]" /> Active Round-Robin Reps
+            <UserCheck className="w-4 h-4 text-[#d97706]" /> Active Round-Robin Reps
           </span>
           <strong>{overviewLoading ? "..." : activeReps}</strong>
-          <small className="text-[#d97706]">Operational in rotation pool</small>
+          <small className="text-[#92400e]">Operational in rotation pool</small>
         </div>
       </div>
 
@@ -424,8 +446,11 @@ export function AnalyticsView() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-1">
-          {captureMethods.map((cm) => (
-            <div key={cm.capture_method} className="an-method-card">
+          {captureMethods.map((cm, idx) => (
+            <div
+              key={cm.capture_method}
+              className={`an-method-card ${getMethodThemeClass(cm.capture_method, idx)}`}
+            >
               <div>
                 <div className="flex items-center justify-between">
                   <span className="an-method-title">

@@ -616,9 +616,65 @@ html[data-p23-theme="light"] .um-rr-active {
   border-color: rgba(5, 108, 92, 0.25);
 }
 
-html[data-p23-theme="light"] .um-summary-card,
 html[data-p23-theme="light"] .um-table-card {
   box-shadow: 0 8px 24px -6px rgba(2, 34, 40, 0.07);
+}
+
+html[data-p23-theme="light"] .um-summary-card span {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.um-summary-card-violet,
+html[data-p23-theme="light"] .um-summary-card-violet {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e4d4ff 52%, #d4bfff 100%) !important;
+  border: 1px solid rgba(124, 58, 237, 0.24) !important;
+  box-shadow: 0 10px 26px -6px rgba(124, 58, 237, 0.14), inset 0 1px 0 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.um-summary-card-violet:hover,
+html[data-p23-theme="light"] .um-summary-card-violet:hover {
+  border-color: rgba(124, 58, 237, 0.48) !important;
+  transform: translateY(-2px);
+}
+
+.um-summary-card-mint,
+html[data-p23-theme="light"] .um-summary-card-mint {
+  background: linear-gradient(135deg, #d8fcf4 0%, #b2f7e8 52%, #86efda 100%) !important;
+  border: 1px solid rgba(13, 148, 136, 0.26) !important;
+  box-shadow: 0 10px 26px -6px rgba(13, 148, 136, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.um-summary-card-mint:hover,
+html[data-p23-theme="light"] .um-summary-card-mint:hover {
+  border-color: rgba(13, 148, 136, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+.um-summary-card-rose,
+html[data-p23-theme="light"] .um-summary-card-rose {
+  background: linear-gradient(135deg, #fce7f6 0%, #f9ceee 52%, #f4b2e4 100%) !important;
+  border: 1px solid rgba(192, 38, 211, 0.24) !important;
+  box-shadow: 0 10px 26px -6px rgba(192, 38, 211, 0.14), inset 0 1px 0 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.um-summary-card-rose:hover,
+html[data-p23-theme="light"] .um-summary-card-rose:hover {
+  border-color: rgba(192, 38, 211, 0.48) !important;
+  transform: translateY(-2px);
+}
+
+.um-summary-card-amber,
+html[data-p23-theme="light"] .um-summary-card-amber {
+  background: linear-gradient(135deg, #fef5d7 0%, #fde69e 52%, #fcd56b 100%) !important;
+  border: 1px solid rgba(217, 119, 6, 0.28) !important;
+  box-shadow: 0 10px 26px -6px rgba(217, 119, 6, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+.um-summary-card-amber:hover,
+html[data-p23-theme="light"] .um-summary-card-amber:hover {
+  border-color: rgba(217, 119, 6, 0.5) !important;
+  transform: translateY(-2px);
 }
 
 html[data-p23-theme="light"] .um-search-input,

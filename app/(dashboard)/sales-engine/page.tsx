@@ -1,5 +1,5 @@
-import { OutreachDashboard } from "@/components/dashboard/outreach-dashboard";
+import { ExecutiveDashboardView } from "@/components/dashboard/executive/executive-dashboard-view";
 
 export default function SalesEnginePage() {
-  return <OutreachDashboard />;
+  return <ExecutiveDashboardView />;
 }

@@ -4,8 +4,10 @@ import "./globals.css";
 import "./outreach-dashboard.css";
 import "./sales-workspace.css";
 import "./outreach-activities.css";
+import "./p23-dashboard-theme.css";
 import QueryProvider from "@/components/providers/query-provider";
 import AuthInitializer from "@/components/providers/auth-initializer";
+import { P23ThemeProvider } from "@/components/providers/theme-provider";
 import { MockProvider } from "@/mocks/mock-provider";
 import { Toaster } from "sonner";
 
@@ -56,13 +58,15 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <MockProvider>
-          <QueryProvider>
-            <AuthInitializer>
-              {children}
-            </AuthInitializer>
-          </QueryProvider>
-        </MockProvider>
+        <P23ThemeProvider>
+          <MockProvider>
+            <QueryProvider>
+              <AuthInitializer>
+                {children}
+              </AuthInitializer>
+            </QueryProvider>
+          </MockProvider>
+        </P23ThemeProvider>
         <Toaster position="top-center" richColors />
       </body>
     </html>

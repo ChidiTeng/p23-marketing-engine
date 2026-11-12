@@ -8,19 +8,54 @@ import { useAuthStore } from "@/store/auth";
 import { clearAuthSession, getAuthTokenFromDocument } from "@/lib/auth/session";
 import { logoutFromSalesEngine } from "@/lib/api/sales-engine-native-auth";
 import { getSalesEngineToken, clearSalesEngineSession } from "@/lib/sales-engine/session";
-import { ChevronDown, Menu, X, LogOut, Settings, BarChart3, Users, GitMerge } from "lucide-react";
+import {
+  ChevronDown,
+  Menu,
+  X,
+  LogOut,
+  Settings,
+  BarChart3,
+  Users,
+  GitMerge,
+  Search,
+  Bell,
+  Sun,
+  Moon,
+  FileSpreadsheet,
+  Sparkles,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils/sample";
 import LogoutModal from "@/components/ui/logout-modal";
 import { resolveAvatarSrc } from "@/lib/avatar";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { useP23Theme } from "@/components/providers/theme-provider";
+import { CommandPaletteModal } from "./command-palette";
 
+type NavItem = {
+  name: string;
+  href: string;
+  icon: string;
+  adminOnly?: boolean;
+  hasChevron?: boolean;
+};
 
-const navItems = [
+const primaryNavItems: NavItem[] = [
   { name: "Dashboard", href: "/dashboard", icon: "/dashboard-design/469fa.svg" },
-  { name: "Smart Leads", href: "/smart-leads", icon: "/dashboard-design/8ea52.svg" },
+  { name: "Smart Leads", href: "/smart-leads", icon: "/dashboard-design/8ea52.svg", hasChevron: true },
   { name: "Social Listening", href: "/social-listening", icon: "/dashboard-design/d3b09.svg" },
-  { name: "CRM", href: "/crm", icon: "/dashboard-design/f4304.svg" },
+  { name: "CRM", href: "/crm", icon: "/dashboard-design/f4304.svg", hasChevron: true },
+  { name: "Analytics", href: "/analytics", icon: "/dashboard-design/26ef3.svg", adminOnly: true },
+  { name: "Users", href: "/users", icon: "/dashboard-design/934c3.svg", adminOnly: true },
+  { name: "Duplicates", href: "/duplicates", icon: "/dashboard-design/f4304.svg", adminOnly: true },
+  { name: "Settings", href: "/settings", icon: "/dashboard-design/934c3.svg" },
+];
+
+const RECENT_NOTIFICATIONS = [
+  { id: "n1", title: "New opportunity created", detail: "by Amara Okafor · 3m ago", badge: "Opportunity", href: "/crm" },
+  { id: "n2", title: "Deal moved to Negotiation", detail: "by Tunde Bello · 15m ago", badge: "Deal", href: "/crm" },
+  { id: "n3", title: "New lead captured from Website", detail: "TechGlobal Ltd · 22m ago", badge: "Lead", href: "/crm" },
+  { id: "n4", title: "Duplicate collision detected", detail: "Phone match in review queue · 1h ago", badge: "Review", href: "/duplicates" },
 ];
 
 export function Navbar() {
@@ -28,20 +63,41 @@ export function Navbar() {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
   const profileRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
+
   const user = useAuthStore((s) => s.user);
   const clearUser = useAuthStore((s) => s.clearUser);
   const { isAdminOrOwner } = useCurrentUser();
-  const basePath = "";
+  const { theme, toggleTheme } = useP23Theme();
+
+  const visibleNavItems = primaryNavItems.filter(
+    (item) => !item.adminOnly || isAdminOrOwner
+  );
+
+  // Global ⌘K / Ctrl+K shortcut for Command Palette
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsSearchOpen((v) => !v);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(e.target as Node)
-      ) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
         setProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -55,7 +111,7 @@ export function Navbar() {
         await logoutFromSalesEngine(token);
       }
     } catch {
-      // Continue local logout cleanup even if API logout fails.
+      // Continue local logout cleanup
     }
 
     clearAuthSession();
@@ -68,373 +124,477 @@ export function Navbar() {
     }
   }
 
+  const userInitials = (() => {
+    const name = user?.name?.trim();
+    if (!name) return "EN";
+    const parts = name.split(/\s+/);
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  })();
+
+  const isLight = theme === "light";
+
   return (
-    <nav className="dashboard-navbar flex items-center justify-between text-white relative z-50">
-      {/* Logo */}
-      <div className="flex items-center">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
-          <Image src="/dashboard-design/84470.svg" alt="" width={26} height={26} />
-          <span className="hidden text-base font-light sm:inline">P23 <i>Marketing</i></span>
+    <>
+      <nav
+        className="w-full max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-10 pt-5 pb-3 flex items-center justify-between gap-4 relative z-50"
+        data-testid="p23-navbar"
+      >
+        {/* Left: Official P23 Logo */}
+        <Link href="/dashboard" className="flex items-center gap-3 shrink-0 group">
+          <div
+            className={cn(
+              "w-10 h-10 rounded-full flex items-center justify-center border transition-transform duration-200 group-hover:scale-105 shadow-md",
+              isLight
+                ? "bg-[#022228] border-[#2ae9c9]/50 shadow-[#022228]/15"
+                : "bg-gradient-to-br from-purple-600/40 via-[#151326] to-emerald-500/30 border-purple-400/40 shadow-purple-950/50"
+            )}
+          >
+            <Image
+              src="/dashboard-design/84470.svg"
+              alt="P23 Logo"
+              width={22}
+              height={22}
+              className="object-contain"
+            />
+          </div>
+          <div className="flex flex-col leading-none">
+            <span
+              className={cn(
+                "text-[16px] font-extrabold tracking-tight",
+                isLight ? "text-[#022228]" : "text-white"
+              )}
+            >
+              P23
+            </span>
+            <span
+              className={cn(
+                "text-[9px] font-semibold tracking-[0.22em] uppercase mt-0.5",
+                isLight ? "text-[#0d6e6e]" : "text-slate-400"
+              )}
+            >
+              AFRICA
+            </span>
+          </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <div className="dashboard-navigation hidden lg:flex items-center">
-          {navItems.map((item) => {
-            const itemHref = basePath + item.href;
-            const isActive = item.href === "/dashboard" ? pathname.startsWith("/dashboard") : pathname.startsWith(itemHref);
+        {/* Center: Floating Pill Navigation Dock */}
+        <div
+          className={cn(
+            "hidden xl:flex items-center gap-1 px-2 py-1.5 rounded-full border backdrop-blur-md transition-colors",
+            isLight
+              ? "bg-white/95 border-[#022228]/10 shadow-sm"
+              : "bg-[#12121c]/85 border-white/[0.08] shadow-xl"
+          )}
+        >
+          {visibleNavItems.map((item) => {
+            const isActive =
+              item.href === "/dashboard"
+                ? pathname === "/dashboard" || pathname === "/sales-engine"
+                : pathname.startsWith(item.href);
+
             return (
               <Link
                 key={item.name}
-                href={itemHref}
+                href={item.href}
                 className={cn(
-                  "dashboard-nav-link group relative flex items-center gap-2 transition-all",
-                  isActive ? "is-active" : "",
+                  "px-3.5 py-1.5 rounded-full text-[12.5px] font-medium transition-all flex items-center gap-1.5 whitespace-nowrap",
+                  isActive
+                    ? isLight
+                      ? "bg-[#2ae9c9] text-[#022228] font-semibold shadow-xs"
+                      : "bg-white text-[#09090f] font-semibold shadow-sm"
+                    : isLight
+                    ? "text-slate-600 hover:text-[#022228] hover:bg-slate-100/80"
+                    : "text-slate-300/80 hover:text-white hover:bg-white/[0.06]"
                 )}
               >
-                <Image
-                  src={item.icon}
-                  alt=""
-                  width={item.name === "Dashboard" ? 21 : 24}
-                  height={item.name === "Dashboard" ? 21 : 24}
-                  className={cn(
-                    "transition-opacity duration-300",
-                    isActive
-                      ? "opacity-100"
-                      : "opacity-60 group-hover:opacity-100",
-                  )}
-                />
+                {isActive && (
+                  <span
+                    className={cn(
+                      "w-1.5 h-1.5 rounded-full shrink-0",
+                      isLight ? "bg-[#022228]" : "bg-purple-600"
+                    )}
+                  />
+                )}
                 <span>{item.name}</span>
-                {/* {item.hasDropdown && (
-                  <ChevronDown size={14} className="opacity-40" />
-                )} */}
-
+                {item.hasChevron && (
+                  <ChevronDown
+                    size={12}
+                    className={cn("opacity-60", isActive && "opacity-90")}
+                  />
+                )}
               </Link>
             );
           })}
         </div>
-      </div>
 
-      {/* Right Side Actions */}
-      <div className="flex items-center gap-4 lg:gap-5">
-        <Link href="/sales-engine/outreach" aria-label="Outreach activity" className="hidden sm:block"><Image src="/dashboard-design/26ef3.svg" alt="" width={24} height={24} /></Link>
-        <Link href="/smart-leads?settings=outreach" aria-label="Outreach settings" className="hidden sm:block"><Image src="/dashboard-design/934c3.svg" alt="" width={24} height={24} /></Link>
-        <div
-          ref={profileRef}
-          className="relative flex items-center gap-3 lg:gap-4"
-        >
-          <div className="hidden xl:block text-left">
-            <p className="text-sm font-bold tracking-tight">
-              {user?.name ?? "—"}
-            </p>
-            <p className="text-[10px] text-white/80 font-light">
-              {user?.email ?? "—"}
-            </p>
-          </div>
-
-          {/* Avatar + chevron trigger */}
+        {/* Right Side Controls: Search (⌘K), Theme Switcher, Notifications, Profile Avatar */}
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Search Trigger Pill */}
           <button
-            aria-label="Profile menu"
-            aria-expanded={profileOpen}
-            onClick={() => setProfileOpen((v) => !v)}
-            className="flex items-center gap-1.5 focus:outline-none group"
+            type="button"
+            onClick={() => setIsSearchOpen(true)}
+            aria-label="Search leads, companies, or screens"
+            data-testid="navbar-search-trigger"
+            className={cn(
+              "hidden md:flex items-center justify-between gap-4 px-3.5 py-2 rounded-full border text-xs transition-all cursor-pointer min-w-[210px] lg:min-w-[245px]",
+              isLight
+                ? "bg-white border-[#022228]/12 text-slate-500 hover:border-[#2ae9c9] shadow-2xs"
+                : "bg-[#12121c]/85 border-white/[0.08] text-slate-400 hover:border-purple-400/40"
+            )}
           >
-            <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full overflow-hidden border-2 border-white/10 p-0.5 bg-white/10 flex items-center justify-center">
-              {(() => {
-                const avatarSrc = resolveAvatarSrc(user?.avatar);
-                return (
-                  <Image
-                    src={avatarSrc}
-                    alt="Profile"
-                    width={44}
-                    height={44}
-                    className="w-full h-full object-cover rounded-full"
-                    unoptimized={avatarSrc.startsWith("http") || avatarSrc.endsWith(".svg")}
-                  />
-                );
-              })()}
-            </div>
-            <ChevronDown
-              size={14}
+            <span className="flex items-center gap-2 truncate">
+              <Search size={13.5} className="opacity-70 shrink-0" />
+              <span className="truncate">Search leads, companies...</span>
+            </span>
+            <kbd
               className={cn(
-                "text-white/40 group-hover:text-white/70 transition-all duration-200",
-                profileOpen && "rotate-180 text-white/70",
+                "text-[10px] font-mono px-1.5 py-0.5 rounded border shrink-0",
+                isLight
+                  ? "bg-slate-100 border-slate-200 text-slate-600"
+                  : "bg-white/[0.06] border-white/10 text-slate-300"
               )}
-            />
+            >
+              ⌘K
+            </kbd>
           </button>
 
-          {/* Dropdown */}
-          <AnimatePresence>
-            {profileOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 6, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 6, scale: 0.96 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
-                className="absolute right-0 top-full mt-3 w-56 bg-[#0d2d3a] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50"
+          {/* Theme Switcher Button */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={isLight ? "Switch to dark theme" : "Switch to light theme"}
+            data-testid="theme-toggle-btn"
+            title={isLight ? "Switch to Dark Theme" : "Switch to Light Theme"}
+            className={cn(
+              "w-9 h-9 rounded-full border flex items-center justify-center transition-all cursor-pointer",
+              isLight
+                ? "bg-white border-[#022228]/12 text-[#022228] hover:bg-slate-100 shadow-2xs"
+                : "bg-[#12121c]/85 border-white/[0.08] text-slate-200 hover:text-white hover:border-purple-400/40"
+            )}
+          >
+            {isLight ? <Moon size={16} /> : <Sun size={16} className="text-amber-300" />}
+          </button>
+
+          {/* Notification Bell + Dropdown */}
+          <div ref={notifRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setNotifOpen((v) => !v)}
+              aria-label="Notifications"
+              className={cn(
+                "w-9 h-9 rounded-full border flex items-center justify-center transition-all cursor-pointer relative",
+                isLight
+                  ? "bg-white border-[#022228]/12 text-[#022228] hover:bg-slate-100 shadow-2xs"
+                  : "bg-[#12121c]/85 border-white/[0.08] text-slate-200 hover:text-white hover:border-purple-400/40"
+              )}
+            >
+              <Bell size={15} />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-[#07070c]" />
+            </button>
+
+            <AnimatePresence>
+              {notifOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                  transition={{ duration: 0.14 }}
+                  className={cn(
+                    "absolute right-0 top-full mt-2.5 w-80 rounded-2xl border shadow-2xl overflow-hidden z-50",
+                    isLight
+                      ? "bg-white border-slate-200 text-[#022228]"
+                      : "bg-[#13131f] border-white/10 text-white"
+                  )}
+                >
+                  <div className="px-4 py-3 border-b border-current/10 flex items-center justify-between">
+                    <span className="text-xs font-bold">Live Activity Feed</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-semibold">
+                      4 New
+                    </span>
+                  </div>
+                  <div className="divide-y divide-current/5 max-h-72 overflow-y-auto">
+                    {RECENT_NOTIFICATIONS.map((item) => (
+                      <Link
+                        key={item.id}
+                        href={item.href}
+                        onClick={() => setNotifOpen(false)}
+                        className="block px-4 py-3 hover:bg-current/5 transition-colors"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs font-semibold truncate">{item.title}</p>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-400 font-medium shrink-0">
+                            {item.badge}
+                          </span>
+                        </div>
+                        <p className="text-[11px] opacity-60 mt-0.5">{item.detail}</p>
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* User Avatar Pill ("EN") & Profile Dropdown */}
+          <div ref={profileRef} className="relative">
+            <button
+              type="button"
+              aria-label="Profile menu"
+              aria-expanded={profileOpen}
+              onClick={() => setProfileOpen((v) => !v)}
+              className="flex items-center gap-1.5 focus:outline-none group cursor-pointer"
+            >
+              <div
+                className={cn(
+                  "w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold tracking-tight transition-transform group-hover:scale-105 shadow-md",
+                  isLight
+                    ? "bg-[#022228] text-[#2ae9c9] ring-2 ring-[#2ae9c9]/40"
+                    : "bg-gradient-to-br from-purple-400 to-indigo-600 text-white ring-2 ring-purple-400/30"
+                )}
               >
-                {/* Profile header */}
-                <div className="px-4 py-3.5 border-b border-white/10 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
-                    {(() => {
-                      const avatarSrc = resolveAvatarSrc(user?.avatar);
-                      return (
+                {userInitials}
+              </div>
+            </button>
+
+            <AnimatePresence>
+              {profileOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
+                  className={cn(
+                    "absolute right-0 top-full mt-3 w-60 border rounded-2xl shadow-2xl overflow-hidden z-50",
+                    isLight
+                      ? "bg-white border-slate-200 text-[#022228]"
+                      : "bg-[#13131f] border-white/10 text-white"
+                  )}
+                >
+                  <div className="px-4 py-3.5 border-b border-current/10 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-purple-500/20 border border-purple-400/30 flex items-center justify-center shrink-0 text-xs font-bold text-purple-300 overflow-hidden">
+                      {user?.avatar ? (
                         <Image
-                          src={avatarSrc}
+                          src={resolveAvatarSrc(user.avatar)}
                           alt="Profile"
                           width={36}
                           height={36}
                           className="w-full h-full object-cover rounded-full"
-                          unoptimized={avatarSrc.startsWith("http") || avatarSrc.endsWith(".svg")}
+                          unoptimized
                         />
-                      );
-                    })()}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-white truncate">
-                      {user?.name ?? "—"}
-                    </p>
-                    <p className="text-[11px] text-white/40 truncate">
-                      {user?.email ?? "—"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Menu items */}
-                <div className="p-1.5">
-                  {isAdminOrOwner && (
-                    <>
-                      <Link
-                        href="/analytics"
-                        onClick={() => setProfileOpen(false)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium"
-                      >
-                        <BarChart3 size={15} />
-                        Analytics Review
-                      </Link>
-                      <Link
-                        href="/users"
-                        onClick={() => setProfileOpen(false)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium"
-                      >
-                        <Users size={15} />
-                        User Management
-                      </Link>
-                      <Link
-                        href="/duplicates"
-                        onClick={() => setProfileOpen(false)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium"
-                      >
-                        <GitMerge size={15} />
-                        Duplicate Queue
-                      </Link>
-                      <div className="my-1 border-t border-white/10" />
-                    </>
-                  )}
-                  <Link
-                    href="/settings"
-                    onClick={() => setProfileOpen(false)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium"
-                  >
-                    <Settings size={15} />
-                    Settings
-                  </Link>
-                  <button
-                    onClick={() => {
-                      setProfileOpen(false);
-                      setIsLogoutModalOpen(true);
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors text-sm font-medium cursor-pointer"
-                  >
-                    <LogOut size={15} />
-                    Log out
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="lg:hidden p-2 text-white/60 hover:text-white transition-colors"
-          aria-label="Navigation menu"
-          aria-expanded={isMobileMenuOpen}
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-      </div>
-
-      {/* Mobile Drawer */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[99] lg:hidden"
-            />
-
-            {/* Content */}
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-[#09232D] border-l border-white/5 z-[100] lg:hidden p-8 flex flex-col gap-8 shadow-2xl"
-            >
-              <div className="flex justify-between items-center mb-4">
-                <Link
-                  href="/dashboard"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-2.5"
-                >
-                  <Image src="/dashboard-design/84470.svg" alt="" width={26} height={26} />
-                  <span className="text-base font-light text-white">P23 <i>Marketing</i></span>
-                </Link>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 text-white/40 hover:text-white"
-                >
-                  <X size={28} />
-                </button>
-              </div>
-
-              <div className="space-y-1">
-                {navItems.map((item) => {
-                  const itemHref = basePath + item.href;
-                  const isActive = item.href === "/dashboard" ? pathname.startsWith("/dashboard") : pathname.startsWith(itemHref);
-                  return (
-                    <Link
-                      key={item.name}
-                      href={itemHref}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={cn(
-                        "flex items-center gap-4 p-4 rounded-2xl transition-all",
-                        isActive
-                          ? "bg-white/5 text-white"
-                          : "text-white/40 hover:bg-white/5",
+                      ) : (
+                        userInitials
                       )}
-                    >
-                      <Image
-                        src={item.icon}
-                        alt=""
-                        width={item.name === "Dashboard" ? 21 : 24}
-                        height={item.name === "Dashboard" ? 21 : 24}
-                        className={isActive ? "opacity-100" : "opacity-40"}
-                      />
-                      <span className="text-lg font-bold">{item.name}</span>
-                    </Link>
-                  );
-                })}
-
-                {isAdminOrOwner && (
-                  <div className="pt-3 mt-3 border-t border-white/10 space-y-1">
-                    <Link
-                      href="/analytics"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={cn(
-                        "flex items-center gap-4 p-4 rounded-2xl transition-all",
-                        pathname.startsWith("/analytics")
-                          ? "bg-white/5 text-white"
-                          : "text-white/40 hover:bg-white/5",
-                      )}
-                    >
-                      <BarChart3
-                        size={22}
-                        className={pathname.startsWith("/analytics") ? "text-[#2ae9c9]" : "opacity-40"}
-                      />
-                      <span className="text-lg font-bold">Analytics Review</span>
-                    </Link>
-                    <Link
-                      href="/users"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={cn(
-                        "flex items-center gap-4 p-4 rounded-2xl transition-all",
-                        pathname.startsWith("/users")
-                          ? "bg-white/5 text-white"
-                          : "text-white/40 hover:bg-white/5",
-                      )}
-                    >
-                      <Users
-                        size={22}
-                        className={pathname.startsWith("/users") ? "text-[#2ae9c9]" : "opacity-40"}
-                      />
-                      <span className="text-lg font-bold">User Management</span>
-                    </Link>
-                    <Link
-                      href="/duplicates"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={cn(
-                        "flex items-center gap-4 p-4 rounded-2xl transition-all",
-                        pathname.startsWith("/duplicates")
-                          ? "bg-white/5 text-white"
-                          : "text-white/40 hover:bg-white/5",
-                      )}
-                    >
-                      <GitMerge
-                        size={22}
-                        className={pathname.startsWith("/duplicates") ? "text-[#2ae9c9]" : "opacity-40"}
-                      />
-                      <span className="text-lg font-bold">Duplicate Queue</span>
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-auto space-y-6">
-                <div className="flex flex-col gap-4 p-4 bg-white/5 rounded-2xl">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full border border-white/20 bg-white/10 flex items-center justify-center overflow-hidden shrink-0">
-                      {(() => {
-                        const avatarSrc = resolveAvatarSrc(user?.avatar);
-                        return (
-                          <Image
-                            src={avatarSrc}
-                            alt="Profile"
-                            width={48}
-                            height={48}
-                            className="w-full h-full object-cover"
-                            unoptimized={avatarSrc.startsWith("http") || avatarSrc.endsWith(".svg")}
-                          />
-                        );
-                      })()}
                     </div>
-                    <div>
-                      <p className="text-base font-bold">{user?.name ?? "—"}</p>
-                      <p className="text-xs text-white/30">
-                        {user?.email ?? "—"}
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold truncate">
+                        {user?.name ?? "Emmanuel Nwachukwu"}
+                      </p>
+                      <p className="text-[11px] opacity-60 truncate">
+                        {user?.email ?? "emmanuel@p23africa.com"}
                       </p>
                     </div>
                   </div>
+
+                  <div className="p-1.5">
+                    <Link
+                      href="/demo/enquiry"
+                      onClick={() => setProfileOpen(false)}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl opacity-85 hover:opacity-100 hover:bg-current/5 transition-colors text-xs font-medium"
+                    >
+                      <FileSpreadsheet size={14} className="text-emerald-400" />
+                      Website Enquiry Demo
+                    </Link>
+                    <Link
+                      href="/sales-engine/outreach"
+                      onClick={() => setProfileOpen(false)}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl opacity-85 hover:opacity-100 hover:bg-current/5 transition-colors text-xs font-medium"
+                    >
+                      <Sparkles size={14} className="text-purple-400" />
+                      Outreach Workspace
+                    </Link>
+                    {isAdminOrOwner && (
+                      <>
+                        <Link
+                          href="/analytics"
+                          onClick={() => setProfileOpen(false)}
+                          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl opacity-85 hover:opacity-100 hover:bg-current/5 transition-colors text-xs font-medium"
+                        >
+                          <BarChart3 size={14} />
+                          Analytics Review
+                        </Link>
+                        <Link
+                          href="/users"
+                          onClick={() => setProfileOpen(false)}
+                          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl opacity-85 hover:opacity-100 hover:bg-current/5 transition-colors text-xs font-medium"
+                        >
+                          <Users size={14} />
+                          User Management
+                        </Link>
+                        <Link
+                          href="/duplicates"
+                          onClick={() => setProfileOpen(false)}
+                          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl opacity-85 hover:opacity-100 hover:bg-current/5 transition-colors text-xs font-medium"
+                        >
+                          <GitMerge size={14} />
+                          Duplicate Queue
+                        </Link>
+                      </>
+                    )}
+                    <div className="my-1 border-t border-current/10" />
+                    <Link
+                      href="/settings"
+                      onClick={() => setProfileOpen(false)}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl opacity-85 hover:opacity-100 hover:bg-current/5 transition-colors text-xs font-medium"
+                    >
+                      <Settings size={14} />
+                      Settings
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProfileOpen(false);
+                        setIsLogoutModalOpen(true);
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors text-xs font-medium cursor-pointer"
+                    >
+                      <LogOut size={14} />
+                      Log out
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            type="button"
+            className={cn(
+              "xl:hidden p-2 rounded-xl transition-colors",
+              isLight ? "text-[#022228] hover:bg-slate-200/60" : "text-white/75 hover:text-white"
+            )}
+            aria-label="Navigation menu"
+            aria-expanded={isMobileMenuOpen}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* Mobile Drawer */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[99] xl:hidden"
+              />
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className={cn(
+                  "fixed top-0 right-0 bottom-0 w-[82%] max-w-sm border-l z-[100] xl:hidden p-6 flex flex-col gap-6 shadow-2xl overflow-y-auto",
+                  isLight
+                    ? "bg-white border-slate-200 text-[#022228]"
+                    : "bg-[#0d0d16] border-white/10 text-white"
+                )}
+              >
+                <div className="flex justify-between items-center">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-[#022228] flex items-center justify-center">
+                      <Image src="/dashboard-design/84470.svg" alt="P23" width={18} height={18} />
+                    </div>
+                    <span className="text-base font-extrabold">P23 AFRICA</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-2 opacity-60 hover:opacity-100"
+                  >
+                    <X size={24} />
+                  </button>
                 </div>
 
+                {/* Mobile Search Trigger */}
                 <button
+                  type="button"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
-                    setIsLogoutModalOpen(true);
+                    setIsSearchOpen(true);
                   }}
-                  className="w-full bg-red-500/10 p-4 rounded-xl flex items-center justify-center gap-3 text-red-400 hover:text-red-300 transition-colors cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border border-current/15 text-xs opacity-75"
                 >
-                  <LogOut size={22} />
-                  <span className="text-sm font-bold">Log out</span>
+                  <Search size={14} />
+                  <span>Search leads, companies...</span>
                 </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-      {/* Logout Confirmation Modal Overlay */}
-      <LogoutModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={handleLogout}
-      />
 
-    </nav>
+                <div className="space-y-1">
+                  {visibleNavItems.map((item) => {
+                    const isActive =
+                      item.href === "/dashboard"
+                        ? pathname === "/dashboard"
+                        : pathname.startsWith(item.href);
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all",
+                          isActive
+                            ? isLight
+                              ? "bg-[#2ae9c9] text-[#022228]"
+                              : "bg-white text-[#09090f]"
+                            : "opacity-70 hover:opacity-100 hover:bg-current/5"
+                        )}
+                      >
+                        <span>{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-auto pt-4 border-t border-current/10 space-y-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsLogoutModalOpen(true);
+                    }}
+                    className="w-full bg-red-500/10 p-3 rounded-xl flex items-center justify-center gap-2 text-red-400 text-xs font-bold cursor-pointer"
+                  >
+                    <LogOut size={16} />
+                    <span>Log out</span>
+                  </button>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        <LogoutModal
+          isOpen={isLogoutModalOpen}
+          onClose={() => setIsLogoutModalOpen(false)}
+          onConfirm={handleLogout}
+        />
+      </nav>
+
+      <CommandPaletteModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
+    </>
   );
 }
-

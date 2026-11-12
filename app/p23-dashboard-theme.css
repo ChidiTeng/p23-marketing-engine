@@ -1,0 +1,198 @@
+/* ==========================================================================
+   P23 Marketing Engine — Dual-Theme Executive Dashboard Design System
+   Dark Mode: Exact replica of the P23 Africa Executive Growth reference
+   Light Mode: Native P23 Marketing Engine teal-ink & crisp white surface system
+   ========================================================================== */
+
+:root,
+[data-p23-theme="dark"] {
+  --p23-canvas-bg: radial-gradient(ellipse 68% 48% at 14% 0%, rgba(109, 40, 217, 0.34) 0%, rgba(76, 29, 149, 0.14) 45%, transparent 75%),
+    radial-gradient(ellipse 55% 42% at 88% 12%, rgba(88, 28, 135, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 18% 95%, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
+    #07070c;
+  --p23-card-bg: rgba(18, 18, 26, 0.86);
+  --p23-card-bg-hover: rgba(24, 24, 35, 0.92);
+  --p23-card-border: rgba(255, 255, 255, 0.075);
+  --p23-card-border-hover: rgba(168, 85, 247, 0.28);
+  --p23-card-shadow: 0 14px 36px -6px rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+
+  --p23-inner-bg: rgba(27, 27, 39, 0.72);
+  --p23-inner-bg-hover: rgba(36, 36, 52, 0.88);
+  --p23-inner-border: rgba(255, 255, 255, 0.055);
+
+  --p23-nav-dock-bg: rgba(18, 18, 27, 0.82);
+  --p23-nav-dock-border: rgba(255, 255, 255, 0.08);
+  --p23-nav-active-bg: #ffffff;
+  --p23-nav-active-text: #09090f;
+  --p23-nav-active-dot: #7c3aed;
+  --p23-nav-link-text: rgba(255, 255, 255, 0.68);
+  --p23-nav-link-hover: #ffffff;
+
+  --p23-text-primary: #ffffff;
+  --p23-text-secondary: #94a3b8;
+  --p23-text-muted: #64748b;
+  --p23-eyebrow: #a78bfa;
+
+  --p23-hero-card-bg: linear-gradient(135deg, #6ee7b7 0%, #86efac 32%, #bef264 72%, #d9f99d 100%);
+  --p23-hero-text: #052014;
+  --p23-hero-subtext: rgba(5, 32, 20, 0.68);
+  --p23-hero-badge-bg: #0b1812;
+  --p23-hero-badge-text: #a3e635;
+  --p23-hero-btn-primary-bg: #0b1410;
+  --p23-hero-btn-primary-text: #ffffff;
+  --p23-hero-btn-secondary-bg: rgba(255, 255, 255, 0.35);
+  --p23-hero-btn-secondary-text: #052014;
+
+  --p23-pill-control-bg: rgba(24, 24, 36, 0.85);
+  --p23-pill-control-border: rgba(255, 255, 255, 0.1);
+  --p23-btn-export-bg: #ffffff;
+  --p23-btn-export-text: #09090f;
+
+  --p23-bar-inactive: rgba(255, 255, 255, 0.12);
+  --p23-bar-inactive-top: rgba(255, 255, 255, 0.22);
+  --p23-bar-active: linear-gradient(180deg, #e9d5ff 0%, #c084fc 35%, #9333ea 100%);
+  --p23-bar-active-glow: 0 0 24px rgba(192, 132, 252, 0.45);
+  --p23-grid-line: rgba(255, 255, 255, 0.045);
+}
+
+[data-p23-theme="light"] {
+  --p23-canvas-bg: linear-gradient(180deg, #eef5f7 0%, #f4f7f9 45%, #e9f1f4 100%);
+  --p23-card-bg: #ffffff;
+  --p23-card-bg-hover: #fcfdfe;
+  --p23-card-border: rgba(2, 34, 40, 0.09);
+  --p23-card-border-hover: rgba(42, 233, 201, 0.55);
+  --p23-card-shadow: 0 8px 24px -4px rgba(2, 34, 40, 0.07), 0 2px 6px -1px rgba(2, 34, 40, 0.04);
+
+  --p23-inner-bg: #f8fafb;
+  --p23-inner-bg-hover: #f0f6f8;
+  --p23-inner-border: rgba(2, 34, 40, 0.08);
+
+  --p23-nav-dock-bg: #ffffff;
+  --p23-nav-dock-border: rgba(2, 34, 40, 0.1);
+  --p23-nav-active-bg: #2ae9c9;
+  --p23-nav-active-text: #022228;
+  --p23-nav-active-dot: #022228;
+  --p23-nav-link-text: #334155;
+  --p23-nav-link-hover: #022228;
+
+  --p23-text-primary: #070b16;
+  --p23-text-secondary: #475569;
+  --p23-text-muted: #64748b;
+  --p23-eyebrow: #0d6e6e;
+
+  --p23-hero-card-bg: linear-gradient(135deg, #022228 0%, #09353f 55%, #165e69 100%);
+  --p23-hero-text: #ffffff;
+  --p23-hero-subtext: rgba(255, 255, 255, 0.75);
+  --p23-hero-badge-bg: rgba(42, 233, 201, 0.18);
+  --p23-hero-badge-text: #2ae9c9;
+  --p23-hero-btn-primary-bg: #2ae9c9;
+  --p23-hero-btn-primary-text: #022228;
+  --p23-hero-btn-secondary-bg: rgba(255, 255, 255, 0.14);
+  --p23-hero-btn-secondary-text: #ffffff;
+
+  --p23-pill-control-bg: #ffffff;
+  --p23-pill-control-border: rgba(2, 34, 40, 0.14);
+  --p23-btn-export-bg: #022228;
+  --p23-btn-export-text: #ffffff;
+
+  --p23-bar-inactive: rgba(2, 34, 40, 0.10);
+  --p23-bar-inactive-top: rgba(2, 34, 40, 0.22);
+  --p23-bar-active: linear-gradient(180deg, #2ae9c9 0%, #14b8a6 50%, #0d9488 100%);
+  --p23-bar-active-glow: 0 4px 18px rgba(42, 233, 201, 0.35);
+  --p23-grid-line: rgba(2, 34, 40, 0.06);
+}
+
+/* Dashboard Shell Overrides */
+.dashboard-shell {
+  background: var(--p23-canvas-bg) !important;
+  color: var(--p23-text-primary);
+  transition: background 0.25s ease, color 0.2s ease;
+}
+
+/* Bento Card Surface */
+.p23-bento-card {
+  background: var(--p23-card-bg);
+  border: 1px solid var(--p23-card-border);
+  border-radius: 22px;
+  box-shadow: var(--p23-card-shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.p23-bento-card:hover {
+  border-color: var(--p23-card-border-hover);
+}
+
+/* Hero Revenue Card */
+.p23-hero-revenue-card {
+  background: var(--p23-hero-card-bg);
+  color: var(--p23-hero-text);
+  border-radius: 22px;
+  box-shadow: 0 16px 36px -6px rgba(16, 185, 129, 0.22), inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.p23-hero-revenue-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Inner Row Items (Business Engines, Hot Leads, Real-Time Activity) */
+.p23-inner-row {
+  background: var(--p23-inner-bg);
+  border: 1px solid var(--p23-inner-border);
+  border-radius: 16px;
+  transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.p23-inner-row:hover {
+  background: var(--p23-inner-bg-hover);
+  border-color: var(--p23-card-border-hover);
+  transform: translateY(-1px);
+}
+
+/* Pill Controls & Segmented Buttons */
+.p23-pill-control {
+  background: var(--p23-pill-control-bg);
+  border: 1px solid var(--p23-pill-control-border);
+  color: var(--p23-text-primary);
+  border-radius: 9999px;
+  transition: all 0.15s ease;
+}
+
+.p23-pill-control:hover {
+  border-color: var(--p23-card-border-hover);
+}
+
+.p23-export-btn {
+  background: var(--p23-btn-export-bg);
+  color: var(--p23-btn-export-text);
+  border-radius: 9999px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.p23-export-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.94;
+}
+
+/* Light mode adaptations for legacy pages inside .dashboard-shell */
+[data-p23-theme="light"] .an-page,
+[data-p23-theme="light"] .um-page,
+[data-p23-theme="light"] .dr-page {
+  color: #070b16;
+}
+
+[data-p23-theme="light"] .an-heading h1,
+[data-p23-theme="light"] .um-heading h1,
+[data-p23-theme="light"] .dr-heading h1 {
+  color: #022228;
+}
+

@@ -1,5 +1,5 @@
 import { SALES_ENGINE_API_BASE_URL, SalesEngineApiError } from "./sales-engine";
-import { getSalesEngineToken } from "@/lib/sales-engine/session";
+import { getSalesEngineOrgId, getSalesEngineToken } from "@/lib/sales-engine/session";
 import { getAuthTokenFromDocument } from "@/lib/auth/session";
 import type { Member, MemberRole, SuspendPayload } from "./contracts/member";
 import type { Invitation, CreateInvitationPayload } from "./contracts/invitation";
@@ -13,6 +13,7 @@ async function memberApiRequest<T>(
   } = {}
 ): Promise<T> {
   const token = getSalesEngineToken() || getAuthTokenFromDocument();
+  const orgId = getSalesEngineOrgId();
   const url = `${SALES_ENGINE_API_BASE_URL}${path}`;
 
   const res = await fetch(url, {
@@ -21,6 +22,7 @@ async function memberApiRequest<T>(
       Accept: "application/json",
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(orgId ? { "X-Organization-Id": orgId } : {}),
     },
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
   });

@@ -304,3 +304,61 @@
   gap: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
+
+/* Light Theme Support for Duplicate Review */
+html[data-p23-theme="light"] .dr-page {
+  --dr-muted: #4a656a;
+  --dr-border: rgba(2, 34, 40, 0.1);
+  color: #022228;
+}
+
+html[data-p23-theme="light"] .dr-heading h1,
+html[data-p23-theme="light"] .dr-field-value {
+  color: #022228;
+}
+
+html[data-p23-theme="light"] .dr-card,
+html[data-p23-theme="light"] .dr-empty-box {
+  background: #ffffff;
+  border-color: rgba(2, 34, 40, 0.12);
+  box-shadow: 0 8px 24px -6px rgba(2, 34, 40, 0.07);
+}
+
+html[data-p23-theme="light"] .dr-card-header {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, #f4f7f9 100%);
+}
+
+html[data-p23-theme="light"] .dr-collision-reason,
+html[data-p23-theme="light"] .dr-heading-badge,
+html[data-p23-theme="light"] .dr-count-badge {
+  color: #b45309;
+}
+
+html[data-p23-theme="light"] .dr-col-existing {
+  background: #f8fafb;
+}
+
+html[data-p23-theme="light"] .dr-col-candidate {
+  background: #ffffff;
+}
+
+html[data-p23-theme="light"] .dr-card-footer {
+  background: #f4f7f9;
+}
+
+html[data-p23-theme="light"] .dr-btn-secondary {
+  background: #ffffff;
+  color: #022228;
+  border-color: rgba(2, 34, 40, 0.18);
+}
+
+html[data-p23-theme="light"] .dr-highlight-amber {
+  color: #92400e;
+  background: rgba(245, 158, 11, 0.15);
+}
+
+html[data-p23-theme="light"] .dr-highlight-mint {
+  color: #065f46;
+  background: rgba(42, 233, 201, 0.22);
+}
+

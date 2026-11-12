@@ -25,26 +25,27 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useSourceBreakdown, useLeadOverviewAnalytics } from "@/hooks/use-analytics";
+import { buildFallbackSourceBreakdown } from "@/lib/api/analytics";
 import "./analytics.css";
 
 const SECTOR_COLORS: Record<string, string> = {
-  Construction: "#2ae9c9",
-  Technology: "#38bdf8",
+  Construction: "#14b8a6",
+  Technology: "#0ea5e9",
   "Real Estate": "#f59e0b",
-  "Business Consulting": "#a855f7",
+  "Business Consulting": "#8b5cf6",
   Agriculture: "#22c55e",
-  Other: "#94a3b8",
+  Other: "#64748b",
 };
 
 const CHANNEL_COLORS: string[] = [
-  "#2ae9c9",
-  "#38bdf8",
-  "#818cf8",
-  "#c084fc",
-  "#f472b6",
-  "#fb923c",
-  "#facc15",
-  "#4ade80",
+  "#14b8a6",
+  "#0ea5e9",
+  "#6366f1",
+  "#a855f7",
+  "#ec4899",
+  "#f97316",
+  "#eab308",
+  "#22c55e",
 ];
 
 export function AnalyticsView() {
@@ -62,42 +63,51 @@ export function AnalyticsView() {
     touch: touchModel,
   });
 
-  const totalLeads = overview?.total_leads ?? breakdown?.total_leads ?? 0;
+  const totalLeads = overview?.total_leads || breakdown?.total_leads || 120;
   const pipelineValue = overview?.pipeline_value
     ? `$${overview.pipeline_value.toLocaleString()}`
     : "$485,000";
   const convRate = overview?.conversion_rate ?? 24;
   const activeReps = overview?.active_reps ?? 4;
 
+  const fallbackBreakdown = useMemo(
+    () => buildFallbackSourceBreakdown(touchModel, totalLeads),
+    [touchModel, totalLeads]
+  );
+
   const channelsData = useMemo(() => {
-    if (!breakdown?.channels?.length) return [];
-    return breakdown.channels.map((c) => ({
+    const sourceChannels =
+      breakdown?.channels && breakdown.channels.length > 0
+        ? breakdown.channels
+        : fallbackBreakdown.channels;
+
+    return sourceChannels.map((c) => ({
       ...c,
       displayName: c.channel
         .split("_")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(" "),
     }));
-  }, [breakdown?.channels]);
+  }, [breakdown?.channels, fallbackBreakdown.channels]);
 
   const interestsData = useMemo(() => {
-    if (!breakdown?.interests?.length) return [];
-    return breakdown.interests.map((item) => ({
+    const sourceInterests =
+      breakdown?.interests && breakdown.interests.length > 0
+        ? breakdown.interests
+        : fallbackBreakdown.interests;
+
+    return sourceInterests.map((item) => ({
       ...item,
-      color: SECTOR_COLORS[item.interest] || "#94a3b8",
+      color: SECTOR_COLORS[item.interest] || "#64748b",
     }));
-  }, [breakdown?.interests]);
+  }, [breakdown?.interests, fallbackBreakdown.interests]);
 
   const captureMethods = useMemo(() => {
-    return (
-      breakdown?.capture_methods ?? [
-        { capture_method: "website_form", count: 48, percentage: 40 },
-        { capture_method: "manual", count: 32, percentage: 27 },
-        { capture_method: "smart_lead", count: 24, percentage: 20 },
-        { capture_method: "social_listening", count: 16, percentage: 13 },
-      ]
-    );
-  }, [breakdown?.capture_methods]);
+    if (breakdown?.capture_methods && breakdown.capture_methods.length > 0) {
+      return breakdown.capture_methods;
+    }
+    return fallbackBreakdown.capture_methods;
+  }, [breakdown?.capture_methods, fallbackBreakdown.capture_methods]);
 
   const formatMethodName = (method: string) => {
     switch (method) {
@@ -120,11 +130,9 @@ export function AnalyticsView() {
       <div className="an-heading">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#2ae9c9]/15 text-[#2ae9c9] border border-[#2ae9c9]/30">
-              P23 Attribution Engine
-            </span>
+            <span className="an-eyebrow-pill">P23 Attribution Engine</span>
           </div>
-          <h1>Attribution & Performance Analytics</h1>
+          <h1>Attribution &amp; Performance Analytics</h1>
           <p>
             Real-time multi-channel tracking, primary sector classification, and rep intake throughput.
           </p>
@@ -133,7 +141,7 @@ export function AnalyticsView() {
         <div className="an-controls">
           {/* Attribution Model Toggle */}
           <div className="flex items-center gap-2">
-            <span className="text-[12px] text-[#8da4a6] flex items-center gap-1">
+            <span className="an-control-label">
               <Layers className="w-3.5 h-3.5" /> Model:
             </span>
             <div className="an-toggle-group">
@@ -158,7 +166,7 @@ export function AnalyticsView() {
 
           {/* Date Range Selector */}
           <div className="flex items-center gap-2">
-            <span className="text-[12px] text-[#8da4a6] flex items-center gap-1">
+            <span className="an-control-label">
               <Filter className="w-3.5 h-3.5" /> Range:
             </span>
             <select
@@ -180,28 +188,28 @@ export function AnalyticsView() {
       <div className="an-kpi-grid">
         <div className="an-kpi-card" data-testid="kpi-total-leads">
           <span>
-            <Users className="w-4 h-4 text-[#2ae9c9]" /> Total Captured Leads
+            <Users className="w-4 h-4 text-[#14b8a6]" /> Total Captured Leads
           </span>
           <strong>{overviewLoading ? "..." : totalLeads.toLocaleString()}</strong>
-          <small className="flex items-center gap-1">
-            <ArrowUpRight className="w-3 h-3 text-[#4ade80]" /> +18% new this week
+          <small className="flex items-center gap-1 text-emerald-500">
+            <ArrowUpRight className="w-3.5 h-3.5" /> +18% new this week
           </small>
         </div>
 
         <div className="an-kpi-card" data-testid="kpi-pipeline-value">
           <span>
-            <DollarSign className="w-4 h-4 text-[#38bdf8]" /> Total Pipeline Value
+            <DollarSign className="w-4 h-4 text-[#0ea5e9]" /> Total Pipeline Value
           </span>
           <strong>{overviewLoading ? "..." : pipelineValue}</strong>
-          <small className="text-[#38bdf8]">Heuristic weighted sum</small>
+          <small className="text-[#0ea5e9]">Heuristic weighted sum</small>
         </div>
 
         <div className="an-kpi-card" data-testid="kpi-conversion-rate">
           <span>
-            <TrendingUp className="w-4 h-4 text-[#a855f7]" /> Win / Conversion Rate
+            <TrendingUp className="w-4 h-4 text-[#8b5cf6]" /> Win / Conversion Rate
           </span>
           <strong>{overviewLoading ? "..." : `${convRate}%`}</strong>
-          <small className="text-[#a855f7]">Lead to Customer progression</small>
+          <small className="text-[#8b5cf6]">Lead to Customer progression</small>
         </div>
 
         <div className="an-kpi-card" data-testid="kpi-active-reps">
@@ -209,7 +217,7 @@ export function AnalyticsView() {
             <UserCheck className="w-4 h-4 text-[#f59e0b]" /> Active Round-Robin Reps
           </span>
           <strong>{overviewLoading ? "..." : activeReps}</strong>
-          <small className="text-[#f59e0b]">Operational in rotation pool</small>
+          <small className="text-[#d97706]">Operational in rotation pool</small>
         </div>
       </div>
 
@@ -220,37 +228,43 @@ export function AnalyticsView() {
           <div className="an-chart-card-header">
             <div>
               <h3>Lead Acquisition by Channel</h3>
-              <p>Top acquisition channels ({touchModel === "first" ? "First" : "Last"} Touch Attribution)</p>
+              <p>
+                Top acquisition channels ({touchModel === "first" ? "First" : "Last"} Touch Attribution)
+              </p>
             </div>
-            <span className="text-[11px] text-[#8da4a6] bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
-              Click bar to filter CRM
-            </span>
+            <span className="an-pill-hint">Click bar to filter CRM</span>
           </div>
 
           <div className="an-chart-container">
             {mounted && !breakdownLoading ? (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={290}>
                 <BarChart
                   data={channelsData}
-                  margin={{ top: 10, right: 10, left: -20, bottom: 25 }}
+                  margin={{ top: 10, right: 12, left: -18, bottom: 28 }}
                 >
                   <XAxis
                     dataKey="displayName"
-                    stroke="#8da4a6"
+                    stroke="var(--an-axis-stroke)"
                     fontSize={11}
                     tickLine={false}
                     interval={0}
-                    angle={-25}
+                    angle={-20}
                     textAnchor="end"
                   />
-                  <YAxis stroke="#8da4a6" fontSize={11} tickLine={false} />
+                  <YAxis stroke="var(--an-axis-stroke)" fontSize={11} tickLine={false} />
                   <Tooltip
-                    cursor={{ fill: "rgba(42, 233, 201, 0.08)" }}
+                    cursor={{ fill: "rgba(20, 184, 166, 0.08)" }}
                     content={({ active, payload }) => {
                       if (active && payload && payload.length) {
                         const data = payload[0].payload;
                         return (
-                          <div className="bg-[#07242b] border border-[#2ae9c9]/30 rounded-xl p-3 shadow-xl text-white text-xs">
+                          <div
+                            className="rounded-xl p-3 shadow-xl text-white text-xs"
+                            style={{
+                              background: "var(--an-tooltip-bg)",
+                              border: "1px solid var(--an-tooltip-border)",
+                            }}
+                          >
                             <p className="font-semibold text-white mb-1">{data.displayName}</p>
                             <p className="text-[#2ae9c9]">
                               Leads: <strong>{data.count}</strong> ({data.percentage}%)
@@ -263,9 +277,11 @@ export function AnalyticsView() {
                   />
                   <Bar
                     dataKey="count"
-                    radius={[6, 6, 0, 0]}
+                    radius={[7, 7, 0, 0]}
                     onClick={(entry: unknown) => {
-                      const item = entry as { channel?: string; payload?: { channel?: string } } | undefined;
+                      const item = entry as
+                        | { channel?: string; payload?: { channel?: string } }
+                        | undefined;
                       const channel = item?.channel ?? item?.payload?.channel;
                       if (channel) {
                         router.push(`/crm?channel=${encodeURIComponent(channel)}`);
@@ -283,7 +299,7 @@ export function AnalyticsView() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-sm text-[#8da4a6]">
+              <div className="h-[290px] flex items-center justify-center text-sm opacity-60">
                 Loading channel metrics...
               </div>
             )}
@@ -297,20 +313,26 @@ export function AnalyticsView() {
               <h3>Primary Interest Sectors</h3>
               <p>Automated keyword taxonomy classification</p>
             </div>
-            <Sparkles className="w-4 h-4 text-[#2ae9c9]" />
+            <Sparkles className="w-4 h-4 text-[#14b8a6]" />
           </div>
 
-          <div className="an-chart-container relative flex items-center justify-center">
+          <div className="relative flex items-center justify-center h-[230px]">
             {mounted && !breakdownLoading ? (
               <>
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={225}>
                   <PieChart>
                     <Tooltip
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
                           const data = payload[0].payload;
                           return (
-                            <div className="bg-[#07242b] border border-white/20 rounded-xl p-3 shadow-xl text-white text-xs">
+                            <div
+                              className="rounded-xl p-3 shadow-xl text-white text-xs"
+                              style={{
+                                background: "var(--an-tooltip-bg)",
+                                border: "1px solid var(--an-tooltip-border)",
+                              }}
+                            >
                               <p className="font-semibold text-white">{data.interest}</p>
                               <p style={{ color: data.color }}>
                                 {data.count} leads ({data.percentage}%)
@@ -325,13 +347,19 @@ export function AnalyticsView() {
                       data={interestsData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={65}
-                      outerRadius={95}
+                      innerRadius={62}
+                      outerRadius={92}
                       paddingAngle={3}
                       dataKey="count"
                       nameKey="interest"
                       onClick={(entry: unknown) => {
-                        const item = entry as { interest?: string; name?: string; payload?: { interest?: string } } | undefined;
+                        const item = entry as
+                          | {
+                              interest?: string;
+                              name?: string;
+                              payload?: { interest?: string };
+                            }
+                          | undefined;
                         const interest = item?.interest ?? item?.name ?? item?.payload?.interest;
                         if (interest) {
                           router.push(`/crm?interest=${encodeURIComponent(interest)}`);
@@ -348,16 +376,12 @@ export function AnalyticsView() {
 
                 {/* Donut Center Display */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-[26px] font-bold text-white tracking-tight leading-none">
-                    {totalLeads}
-                  </span>
-                  <span className="text-[11px] text-[#8da4a6] uppercase tracking-wider font-medium mt-1">
-                    Classified Leads
-                  </span>
+                  <span className="an-donut-center-value">{totalLeads}</span>
+                  <span className="an-donut-center-label">Classified Leads</span>
                 </div>
               </>
             ) : (
-              <div className="h-full flex items-center justify-center text-sm text-[#8da4a6]">
+              <div className="h-full flex items-center justify-center text-sm opacity-60">
                 Loading sector taxonomy...
               </div>
             )}
@@ -372,18 +396,16 @@ export function AnalyticsView() {
                 onClick={() => router.push(`/crm?interest=${encodeURIComponent(item.interest)}`)}
                 title={`Filter CRM by ${item.interest}`}
               >
-                <div className="flex items-center">
+                <div className="flex items-center min-w-0">
                   <div
                     className="an-legend-color"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-[13px] font-medium text-white">{item.interest}</span>
+                  <span className="an-legend-name truncate">{item.interest}</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-[12px] text-[#8da4a6]">{item.count} leads</span>
-                  <span className="text-[11px] font-semibold text-[#2ae9c9] bg-[#2ae9c9]/10 px-2 py-0.5 rounded-full border border-[#2ae9c9]/20">
-                    {item.percentage}%
-                  </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="an-legend-count">{item.count}</span>
+                  <span className="an-legend-pct">{item.percentage}%</span>
                 </div>
               </div>
             ))}
@@ -398,47 +420,44 @@ export function AnalyticsView() {
             <h3>Capture Method Intake Distribution</h3>
             <p>Ingestion streams tracked by the P23 marketing and listening pipeline</p>
           </div>
-          <span className="text-xs text-[#8da4a6]">100% automated attribution</span>
+          <span className="an-pill-hint">100% automated attribution</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-1">
           {captureMethods.map((cm) => (
-            <div
-              key={cm.capture_method}
-              className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-[#2ae9c9]/40 transition-colors flex flex-col justify-between"
-            >
+            <div key={cm.capture_method} className="an-method-card">
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-white">
+                <div className="flex items-center justify-between">
+                  <span className="an-method-title">
                     {formatMethodName(cm.capture_method)}
                   </span>
-                  <span className="text-xs font-bold text-[#2ae9c9]">{cm.percentage}%</span>
+                  <span className="an-method-pct">{cm.percentage}%</span>
                 </div>
-                <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden mb-3">
+                <div className="an-method-track">
                   <div
-                    className="bg-[#2ae9c9] h-full rounded-full transition-all duration-500"
+                    className="an-method-fill"
                     style={{ width: `${cm.percentage}%` }}
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between text-[11px] text-[#8da4a6] pt-1 border-t border-white/5">
+              <div className="an-method-footer">
                 <span>{cm.count} leads captured</span>
                 {cm.capture_method === "website_form" && (
                   <button
                     type="button"
                     onClick={() => router.push("/demo/enquiry")}
-                    className="text-[#2ae9c9] hover:underline flex items-center gap-1 cursor-pointer"
+                    className="an-method-link"
                   >
-                    Try Form <ExternalLink className="w-2.5 h-2.5" />
+                    Try Form <ExternalLink className="w-3 h-3" />
                   </button>
                 )}
                 {cm.capture_method === "social_listening" && (
                   <button
                     type="button"
                     onClick={() => router.push("/social-listening")}
-                    className="text-[#2ae9c9] hover:underline flex items-center gap-1 cursor-pointer"
+                    className="an-method-link"
                   >
-                    Signals <ExternalLink className="w-2.5 h-2.5" />
+                    Signals <ExternalLink className="w-3 h-3" />
                   </button>
                 )}
               </div>
@@ -449,4 +468,3 @@ export function AnalyticsView() {
     </div>
   );
 }
-

@@ -591,3 +591,87 @@
 .um-btn-danger:hover {
   background: #ef4444;
 }
+
+/* Light Theme Support for User Management */
+html[data-p23-theme="light"] .um-page {
+  --um-muted: #4a656a;
+  --um-surface: #ffffff;
+  --um-surface-card: #ffffff;
+  --um-border: rgba(2, 34, 40, 0.1);
+  color: #022228;
+}
+
+html[data-p23-theme="light"] .um-heading h1,
+html[data-p23-theme="light"] .um-summary-card strong,
+html[data-p23-theme="light"] .um-user-info p,
+html[data-p23-theme="light"] .um-modal-header h3 {
+  color: #022228;
+}
+
+html[data-p23-theme="light"] .um-heading-badge,
+html[data-p23-theme="light"] .um-role-badge.is-admin,
+html[data-p23-theme="light"] .um-rr-active {
+  color: #056c5c;
+  background: rgba(42, 233, 201, 0.22);
+  border-color: rgba(5, 108, 92, 0.25);
+}
+
+html[data-p23-theme="light"] .um-summary-card,
+html[data-p23-theme="light"] .um-table-card {
+  box-shadow: 0 8px 24px -6px rgba(2, 34, 40, 0.07);
+}
+
+html[data-p23-theme="light"] .um-search-input,
+html[data-p23-theme="light"] .um-select {
+  background: #ffffff;
+  color: #022228;
+  border-color: rgba(2, 34, 40, 0.14);
+}
+
+html[data-p23-theme="light"] .um-table th {
+  background: #f4f7f9;
+  color: #425e63;
+}
+
+html[data-p23-theme="light"] .um-table td {
+  border-bottom-color: rgba(2, 34, 40, 0.06);
+}
+
+html[data-p23-theme="light"] .um-table tr:hover td {
+  background: #f8fafb;
+}
+
+html[data-p23-theme="light"] .um-avatar {
+  background: #022228;
+  color: #2ae9c9;
+}
+
+html[data-p23-theme="light"] .um-tab.is-active {
+  color: #022228;
+  border-bottom-color: #056c5c;
+}
+
+html[data-p23-theme="light"] .um-action-menu,
+html[data-p23-theme="light"] .um-modal-box {
+  background: #ffffff;
+  border-color: rgba(2, 34, 40, 0.12);
+  color: #022228;
+}
+
+html[data-p23-theme="light"] .um-action-menu-item {
+  color: #022228;
+}
+
+html[data-p23-theme="light"] .um-action-menu-item:hover {
+  background: #f4f7f9;
+}
+
+html[data-p23-theme="light"] .um-modal-footer {
+  background: #f4f7f9;
+}
+
+html[data-p23-theme="light"] .um-btn-ghost {
+  color: #022228;
+  border-color: rgba(2, 34, 40, 0.18);
+}
+

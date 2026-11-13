@@ -22,6 +22,7 @@ export type CaptureMethodCount = z.infer<typeof captureMethodCountSchema>;
 
 export const interestCountSchema = z.object({
   interest: z.string(),
+  slug: z.string().optional(),
   count: z.number(),
   percentage: z.number(),
 });
@@ -29,6 +30,7 @@ export type InterestCount = z.infer<typeof interestCountSchema>;
 
 export const sourceBreakdownSchema = z.object({
   total_leads: z.number(),
+  date_range: dateRangeSchema.optional(),
   channels: z.array(channelCountSchema),
   capture_methods: z.array(captureMethodCountSchema),
   interests: z.array(interestCountSchema),

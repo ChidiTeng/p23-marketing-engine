@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect } from "react";
 
-export type P23ThemeMode = "light";
+export type P23ThemeMode = "light" | "dark";
 
 type ThemeContextValue = {
   theme: P23ThemeMode;

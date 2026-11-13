@@ -909,10 +909,7 @@ export function ExecutiveDashboardView() {
                       key={lineIdx}
                       className="w-full border-b border-dashed"
                       style={{
-                        borderColor:
-                          theme === "dark"
-                            ? "rgba(255, 255, 255, 0.05)"
-                            : "rgba(2, 34, 40, 0.06)",
+                        borderColor: "rgba(2, 34, 40, 0.06)",
                       }}
                     />
                   ))}
@@ -1083,10 +1080,7 @@ export function ExecutiveDashboardView() {
                     <div
                       className="mt-2.5 h-1.5 w-full rounded-full overflow-hidden"
                       style={{
-                        backgroundColor:
-                          theme === "dark"
-                            ? "rgba(255, 255, 255, 0.08)"
-                            : "rgba(2, 34, 40, 0.08)",
+                        backgroundColor: "rgba(2, 34, 40, 0.08)",
                       }}
                     >
                       <div

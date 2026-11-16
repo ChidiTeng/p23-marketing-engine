@@ -44,13 +44,18 @@ export function DuplicateReviewView() {
           <p>Triage contact collisions and phone matches to keep your CRM database consolidated.</p>
         </div>
 
-        {reviews.length > 0 && (
-          <div className="dr-count-badge">
-            <span className="dot" />
-            <AlertTriangle size={15} />
-            {reviews.length} {reviews.length === 1 ? "Collision Pending" : "Collisions Pending"}
-          </div>
-        )}
+        <div className="flex flex-wrap items-center gap-3">
+          {reviews.length > 0 && (
+            <div className="dr-count-badge">
+              <span className="dot" />
+              <AlertTriangle size={15} />
+              {reviews.length} {reviews.length === 1 ? "Collision Pending" : "Collisions Pending"}
+            </div>
+          )}
+          <Link href="/crm" className="dr-btn-secondary">
+            Back to CRM
+          </Link>
+        </div>
       </div>
 
       {isLoading ? (

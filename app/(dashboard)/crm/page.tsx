@@ -11,6 +11,7 @@ import ConfirmDeleteModal from "@/components/ui/confirm-delete-modal";
 import { AddLeadModal } from "@/components/crm/add-lead-modal";
 import { LabelManagerModal, PipelineManagerModal } from "@/components/crm/crm-toolbar-modals";
 import { CrmImportExportButton } from "@/components/crm/crm-import-export-button";
+import { CrmDuplicatesButton } from "@/components/crm/crm-duplicates-button";
 import { CRMPageSkeleton } from "@/components/crm/crm-page-skeleton";
 import { LeadsChart, TotalLeadsCard } from "@/components/crm/crm-summary-cards";
 import { CrmFilterBar } from "@/components/crm/crm-filter-bar";
@@ -1071,6 +1072,7 @@ export default function CRMPage() {
               <SlidersHorizontal size={13} />
               Filter
             </button>
+            <CrmDuplicatesButton />
             <CrmImportExportButton
               companyId={companyId}
               apiBasePath={apiBasePath}

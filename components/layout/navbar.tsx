@@ -16,7 +16,6 @@ import {
   Settings,
   BarChart3,
   Users,
-  GitMerge,
   Search,
   Bell,
   Sun,
@@ -45,10 +44,10 @@ const primaryNavItems: NavItem[] = [
   { name: "Smart Leads", href: "/smart-leads", icon: "/dashboard-design/8ea52.svg", hasChevron: true },
   { name: "Social Listening", href: "/social-listening", icon: "/dashboard-design/d3b09.svg" },
   { name: "CRM", href: "/crm", icon: "/dashboard-design/f4304.svg", hasChevron: true },
+  { name: "Customers", href: "/customers", icon: "/dashboard-design/934c3.svg" },
+  { name: "Campaigns", href: "/campaigns", icon: "/dashboard-design/8ea52.svg" },
   { name: "Analytics", href: "/analytics", icon: "/dashboard-design/26ef3.svg", adminOnly: true },
-  { name: "Users", href: "/users", icon: "/dashboard-design/934c3.svg", adminOnly: true },
-  { name: "Duplicates", href: "/duplicates", icon: "/dashboard-design/f4304.svg", adminOnly: true },
-  { name: "Settings", href: "/settings", icon: "/dashboard-design/934c3.svg" },
+  { name: "Reports", href: "/reports", icon: "/dashboard-design/26ef3.svg" },
 ];
 
 const RECENT_NOTIFICATIONS = [
@@ -193,6 +192,8 @@ export function Navbar() {
             const isActive =
               item.href === "/dashboard"
                 ? pathname === "/dashboard" || pathname === "/sales-engine"
+                : item.href === "/crm"
+                ? pathname.startsWith("/crm") || pathname.startsWith("/duplicates")
                 : pathname.startsWith(item.href);
 
             return (
@@ -328,11 +329,16 @@ export function Navbar() {
               aria-label="Profile menu"
               aria-expanded={profileOpen}
               onClick={() => setProfileOpen((v) => !v)}
-              className="flex items-center gap-1.5 focus:outline-none group cursor-pointer"
+              className={cn(
+                "flex items-center gap-1.5 p-1 pr-2.5 rounded-full border transition-all focus:outline-none group cursor-pointer",
+                isLight
+                  ? "bg-white border-[#022228]/12 text-[#022228] hover:border-[#2ae9c9] shadow-2xs"
+                  : "bg-[#12121c]/85 border-white/[0.08] text-slate-200 hover:text-white hover:border-purple-400/40"
+              )}
             >
               <div
                 className={cn(
-                  "w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold tracking-tight transition-transform group-hover:scale-105 shadow-md",
+                  "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold tracking-tight transition-transform group-hover:scale-105 shadow-sm",
                   isLight
                     ? "bg-[#022228] text-[#2ae9c9] ring-2 ring-[#2ae9c9]/40"
                     : "bg-gradient-to-br from-purple-400 to-indigo-600 text-white ring-2 ring-purple-400/30"
@@ -340,6 +346,13 @@ export function Navbar() {
               >
                 {userInitials}
               </div>
+              <ChevronDown
+                size={14}
+                className={cn(
+                  "opacity-70 group-hover:opacity-100 transition-transform duration-200 shrink-0",
+                  profileOpen && "rotate-180"
+                )}
+              />
             </button>
 
             <AnimatePresence>
@@ -415,14 +428,6 @@ export function Navbar() {
                         >
                           <Users size={14} />
                           User Management
-                        </Link>
-                        <Link
-                          href="/duplicates"
-                          onClick={() => setProfileOpen(false)}
-                          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl opacity-85 hover:opacity-100 hover:bg-current/5 transition-colors text-xs font-medium"
-                        >
-                          <GitMerge size={14} />
-                          Duplicate Queue
                         </Link>
                       </>
                     )}
@@ -528,6 +533,8 @@ export function Navbar() {
                     const isActive =
                       item.href === "/dashboard"
                         ? pathname === "/dashboard"
+                        : item.href === "/crm"
+                        ? pathname.startsWith("/crm") || pathname.startsWith("/duplicates")
                         : pathname.startsWith(item.href);
                     return (
                       <Link
@@ -549,7 +556,25 @@ export function Navbar() {
                   })}
                 </div>
 
-                <div className="mt-auto pt-4 border-t border-current/10 space-y-3">
+                <div className="mt-auto pt-4 border-t border-current/10 space-y-2">
+                  {isAdminOrOwner && (
+                    <Link
+                      href="/users"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold opacity-80 hover:opacity-100 hover:bg-current/5 transition-colors"
+                    >
+                      <Users size={15} />
+                      <span>User Management</span>
+                    </Link>
+                  )}
+                  <Link
+                    href="/settings"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold opacity-80 hover:opacity-100 hover:bg-current/5 transition-colors"
+                  >
+                    <Settings size={15} />
+                    <span>Settings</span>
+                  </Link>
                   <button
                     type="button"
                     onClick={() => {

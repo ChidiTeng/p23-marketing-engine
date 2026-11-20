@@ -1,10 +1,7 @@
-import { describe, it, expect, beforeEach, beforeAll, afterAll, afterEach, vi } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
 import React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { setupServer } from "msw/node";
-import { analyticsHandlers } from "@/mocks/handlers/analytics";
-import { resetDb } from "@/mocks/db/store";
+import { resetEmailAutomationStore } from "@/lib/api/contracts/email-automation";
 import { AnalyticsView } from "./analytics-view";
 
 const mockPush = vi.fn();
@@ -25,70 +22,74 @@ vi.mock("recharts", async (importOriginal) => {
   };
 });
 
-const server = setupServer(...analyticsHandlers);
-
-beforeAll(() => server.listen({ onUnhandledRequest: "bypass" }));
-afterEach(() => {
-  server.resetHandlers();
-  mockPush.mockClear();
-});
-afterAll(() => server.close());
-
-function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false, gcTime: 0 },
-    },
-  });
-  return function Wrapper({ children }: { children: React.ReactNode }) {
-    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
-  };
-}
-
-describe("AnalyticsView Component", () => {
+describe("AnalyticsView Component (Dedicated Email Automation Analytics & Reports)", () => {
   beforeEach(() => {
-    resetDb();
+    mockPush.mockClear();
+    resetEmailAutomationStore();
   });
 
-  it("renders attribution analytics title and KPI cards", async () => {
-    render(<AnalyticsView />, { wrapper: createWrapper() });
+  it("exclusively renders Email Automation Analytics & Reports with Sent, Delivered, Opened, and Link Performance (Clicks)", () => {
+    render(<AnalyticsView />);
 
-    expect(screen.getByText("Attribution & Performance Analytics")).toBeDefined();
-    expect(screen.getByText("Total Captured Leads")).toBeDefined();
-    expect(screen.getByText("Total Pipeline Value")).toBeDefined();
-    expect(screen.getByText("Active Round-Robin Reps")).toBeDefined();
-
-    await waitFor(() => {
-      expect(screen.getByTestId("kpi-total-leads")).toBeDefined();
-    });
+    expect(
+      screen.getByText("Email Automation Analytics & Reports")
+    ).toBeDefined();
+    expect(screen.getByTestId("kpi-total-emails-sent").textContent).toContain(
+      "13,720"
+    );
+    expect(screen.getByTestId("kpi-total-emails-sent").textContent).toContain(
+      "13,585 deliv"
+    );
+    expect(screen.getByTestId("kpi-email-open-rate").textContent).toContain(
+      "64.3%"
+    );
+    expect(screen.getByTestId("kpi-email-ctr-reply").textContent).toContain(
+      "3,399 clicks"
+    );
+    expect(
+      screen.getByTestId("kpi-email-attributed-revenue").textContent
+    ).toContain("$199,000");
+    expect(screen.getByTestId("email-sequence-funnel")).toBeDefined();
+    expect(
+      screen.getByTestId("analytics-link-performance-card")
+    ).toBeDefined();
+    expect(screen.getByTestId("email-automation-reports-table")).toBeDefined();
   });
 
-  it("allows switching between First Touch and Last Touch attribution models", async () => {
-    render(<AnalyticsView />, { wrapper: createWrapper() });
+  it("dynamically updates Sent, Delivered, Opened, and Link Click metrics when automated emails are dispatched", () => {
+    render(<AnalyticsView />);
 
-    const firstBtn = screen.getByTestId("toggle-first-touch");
-    const lastBtn = screen.getByTestId("toggle-last-touch");
-
-    expect(firstBtn.classList.contains("is-active")).toBe(true);
-    expect(lastBtn.classList.contains("is-active")).toBe(false);
-
-    fireEvent.click(lastBtn);
-
-    expect(firstBtn.classList.contains("is-active")).toBe(false);
-    expect(lastBtn.classList.contains("is-active")).toBe(true);
+    fireEvent.click(screen.getByTestId("analytics-simulate-dispatch-btn"));
+    expect(screen.getByTestId("kpi-total-emails-sent").textContent).toContain(
+      "13,770"
+    );
   });
 
-  it("renders sector legend and clicking a sector triggers router push to CRM filter", async () => {
-    render(<AnalyticsView />, { wrapper: createWrapper() });
+  it("allows toggling between Open & Click Rate focus and Reply & Conversion focus", () => {
+    render(<AnalyticsView />);
 
-    await waitFor(() => {
-      expect(screen.getByText("Construction")).toBeDefined();
-    });
+    const openBtn = screen.getByTestId("toggle-open-rate-focus");
+    const replyBtn = screen.getByTestId("toggle-reply-rate-focus");
 
-    const constructionItem = screen.getByTitle("Filter CRM by Construction");
-    fireEvent.click(constructionItem);
+    expect(openBtn.classList.contains("is-active")).toBe(true);
+    expect(replyBtn.classList.contains("is-active")).toBe(false);
 
-    expect(mockPush).toHaveBeenCalledWith("/crm?interest=Construction");
+    fireEvent.click(replyBtn);
+
+    expect(openBtn.classList.contains("is-active")).toBe(false);
+    expect(replyBtn.classList.contains("is-active")).toBe(true);
+  });
+
+  it("renders AI Tone legend and navigates to Email Automation Dashboard on click", () => {
+    render(<AnalyticsView />);
+
+    const founderToneItem = screen.getByTitle(
+      "Inspect Founder-to-Founder Direct workflows"
+    );
+    fireEvent.click(founderToneItem);
+
+    expect(mockPush).toHaveBeenCalledWith(
+      "/email-automation?tone=founder_casual"
+    );
   });
 });
-

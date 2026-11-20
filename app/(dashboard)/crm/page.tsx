@@ -42,6 +42,7 @@ import {
   ChevronRight,
   LayoutGrid,
   List,
+  Mail,
   MoreHorizontal,
   Pencil,
   Plus,
@@ -1073,6 +1074,15 @@ export default function CRMPage() {
               Filter
             </button>
             <CrmDuplicatesButton />
+            <button
+              type="button"
+              onClick={() => router.push("/email-automation?source=crm")}
+              data-testid="crm-view-email-automation-btn"
+              className="se-control flex items-center gap-2 px-3 py-2 border border-gray-200 bg-white rounded-[10px] text-[12px] font-medium text-gray-600 hover:border-gray-300 transition-all shadow-sm cursor-pointer"
+            >
+              <Mail size={13} className="text-[#0d9488]" />
+              <span>View Email Automation</span>
+            </button>
             <CrmImportExportButton
               companyId={companyId}
               apiBasePath={apiBasePath}

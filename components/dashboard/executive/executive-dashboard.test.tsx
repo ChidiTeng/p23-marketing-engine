@@ -51,6 +51,11 @@ describe("ExecutiveDashboardView & Dual-Theme Architecture", () => {
     expect(screen.getByTestId("kpi-conversion-rate").textContent).toContain("18.7%");
     expect(screen.getByTestId("kpi-active-opps").textContent).toContain("4,720");
     expect(screen.getByTestId("kpi-programmes").textContent).toContain("1,240");
+
+    // Ticket 3: View Email Automation entry point in Main Dashboard
+    const emailAutoLink = screen.getByTestId("dashboard-view-email-automation-btn");
+    expect(emailAutoLink.textContent).toContain("View Email Automation");
+    expect(emailAutoLink.getAttribute("href")).toBe("/email-automation?source=dashboard");
   });
 
   it("renders Revenue Performance, Business Engines, and Hot Leads in Row 2", async () => {

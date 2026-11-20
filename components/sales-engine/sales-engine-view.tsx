@@ -4845,6 +4845,14 @@ export function SalesEngineView({ activeTab = "smart-lead" }: { activeTab?: Sale
                   <PipelineGaugeIcon className="h-5 w-5 text-[#8a8a8a]" />
                   View CRM Pipeline
                 </Link>
+                <Link
+                  href="/email-automation?source=smart-leads"
+                  data-testid="smart-lead-view-email-automation-btn"
+                  className="se-control flex h-11 items-center gap-2.5 rounded-[14px] border border-[#d1d1d1] bg-white px-4 text-sm font-medium text-[#222222] shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-colors hover:border-[#bfbfbf] hover:bg-[#f8f8f8]"
+                >
+                  <Mail className="h-4 w-4 text-[#0d9488]" />
+                  View Email Automation
+                </Link>
                 <button
                   type="button"
                   onClick={() => handleOpenIcpBuilder()}

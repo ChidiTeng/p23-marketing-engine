@@ -23,6 +23,7 @@ import { useRegenerateOutreach, useSendOutreachActivity } from "@/hooks/use-sale
 import { useOutreachInboxes } from "@/hooks/use-sales-engine-outreach-inbox";
 import { useOutreachSenderSettings } from "@/hooks/use-sales-engine-outreach-sender";
 import { normalizeOutreachSubjectBody, SalesEngineApiError } from "@/lib/api/sales-engine";
+import { recordEmailDispatchAndTrackingEvent } from "@/lib/api/contracts/email-automation";
 import PhoneNumberInput from "@/components/ui/phone-number-input";
 
 export type OutreachPreviewModalProps = {
@@ -395,6 +396,14 @@ export function OutreachPreviewModal({
       },
       {
         onSuccess: () => {
+          recordEmailDispatchAndTrackingEvent({
+            workflowId: "wf-smart-lead-signal-trigger",
+            batchSize: 1,
+            sourceModule: "Smart Lead",
+            recipientEmail: toEmail.trim(),
+            recipientName: contextLabel || "Smart Lead Prospect",
+            companyName: contextLabel || "Smart Lead ICP Match",
+          });
           toast.success(`Outreach queued for ${toEmail.trim()}.`);
           onSent();
           onClose();

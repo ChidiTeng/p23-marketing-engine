@@ -24,6 +24,7 @@ import {
   ChevronRight,
   Download,
   GraduationCap,
+  Mail,
   ShieldCheck,
   Sparkles,
   Target,
@@ -348,8 +349,17 @@ export function ExecutiveDashboardView() {
           </p>
         </div>
 
-        {/* Right Controls: Date Range Selector + Export Report */}
-        <div className="flex items-center gap-2.5 self-start sm:self-end">
+        {/* Right Controls: View Email Automation + Date Range Selector + Export Report */}
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-end">
+          <Link
+            href="/email-automation?source=dashboard"
+            data-testid="dashboard-view-email-automation-btn"
+            className="p23-pill-control inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold cursor-pointer"
+          >
+            <Mail className="w-3.5 h-3.5 text-[#0d9488]" />
+            <span>View Email Automation</span>
+          </Link>
+
           <div className="relative">
             <button
               type="button"

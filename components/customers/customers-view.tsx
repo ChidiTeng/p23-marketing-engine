@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   Check,
   CheckCircle2,
@@ -428,7 +429,16 @@ export function CustomersView() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 self-start sm:self-end">
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-end">
+          <Link
+            href="/email-automation?source=customers"
+            data-testid="customers-view-email-automation-btn"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-slate-200/90 text-[#070b16] text-xs font-semibold shadow-2xs hover:border-slate-300 transition-all cursor-pointer"
+          >
+            <Mail className="w-3.5 h-3.5 text-[#0d9488]" />
+            <span>View Email Automation</span>
+          </Link>
+
           <button
             type="button"
             onClick={handleExportCsv}

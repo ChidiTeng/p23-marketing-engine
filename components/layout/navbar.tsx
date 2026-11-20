@@ -45,7 +45,7 @@ const primaryNavItems: NavItem[] = [
   { name: "Social Listening", href: "/social-listening", icon: "/dashboard-design/d3b09.svg" },
   { name: "CRM", href: "/crm", icon: "/dashboard-design/f4304.svg", hasChevron: true },
   { name: "Customers", href: "/customers", icon: "/dashboard-design/934c3.svg" },
-  { name: "Campaigns", href: "/campaigns", icon: "/dashboard-design/8ea52.svg" },
+  { name: "Campaigns", href: "/campaigns", icon: "/dashboard-design/8ea52.svg", hasChevron: true },
   { name: "Analytics", href: "/analytics", icon: "/dashboard-design/26ef3.svg", adminOnly: true },
   { name: "Reports", href: "/reports", icon: "/dashboard-design/26ef3.svg" },
 ];
@@ -137,8 +137,16 @@ export function Navbar() {
 
   return (
     <>
+      <header
+        className={cn(
+          "sticky top-0 z-50 w-full backdrop-blur-md transition-colors",
+          isLight
+            ? "bg-[#eef5f7]/85 border-b border-[#022228]/[0.06]"
+            : "bg-[#09090f]/85 border-b border-white/[0.06]"
+        )}
+      >
       <nav
-        className="w-full max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-10 pt-5 pb-3 flex items-center justify-between gap-4 relative z-50"
+        className="w-full max-w-[1640px] mx-auto px-4 sm:px-6 lg:px-10 pt-4 pb-3 flex items-center justify-between gap-4 relative"
         data-testid="p23-navbar"
       >
         {/* Left: Official P23 Logo */}
@@ -194,6 +202,8 @@ export function Navbar() {
                 ? pathname === "/dashboard" || pathname === "/sales-engine"
                 : item.href === "/crm"
                 ? pathname.startsWith("/crm") || pathname.startsWith("/duplicates")
+                : item.href === "/campaigns"
+                ? pathname.startsWith("/campaigns") || pathname.startsWith("/email-automation")
                 : pathname.startsWith(item.href);
 
             return (
@@ -598,6 +608,7 @@ export function Navbar() {
           onConfirm={handleLogout}
         />
       </nav>
+      </header>
 
       <CommandPaletteModal
         isOpen={isSearchOpen}

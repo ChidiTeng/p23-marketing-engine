@@ -14,6 +14,7 @@ import {
   Building2,
   ArrowRight,
   FileSpreadsheet,
+  Mail,
   X,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -78,9 +79,17 @@ const QUICK_ROUTES: QuickRouteItem[] = [
     icon: <Sparkles size={16} />,
   },
   {
+    id: "nav-email-automation",
+    title: "Email Automation (Campaigns)",
+    subtitle: "AI email automation workflows, tone calibration, template editor & Smart Lead triggers",
+    href: "/email-automation",
+    category: "Navigation",
+    icon: <Mail size={16} />,
+  },
+  {
     id: "nav-analytics",
-    title: "Attribution & Analytics",
-    subtitle: "Multi-channel attribution & primary sector breakdown",
+    title: "Email Automation Analytics & Reports",
+    subtitle: "Dedicated email automation deliverability, open/click/reply rates & sequence funnel",
     href: "/analytics",
     category: "Navigation",
     icon: <BarChart3 size={16} />,

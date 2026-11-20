@@ -7,6 +7,7 @@ import { smartLeadsHandlers } from "./smart-leads";
 import { socialListeningHandlers } from "./social-listening";
 import { dashboardHandlers } from "./dashboard";
 import { outreachHandlers } from "./outreach";
+import { emailAutomationHandlers } from "./email-automation";
 
 export const handlers = [
   ...authHandlers,
@@ -18,5 +19,6 @@ export const handlers = [
   ...socialListeningHandlers,
   ...dashboardHandlers,
   ...outreachHandlers,
+  ...emailAutomationHandlers,
 ];
 
